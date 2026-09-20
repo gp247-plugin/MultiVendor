@@ -1,0 +1,30 @@
+/*
+ * MultiVendor admin stylesheet — SOURCE.
+ *
+ * Compiled by Tailwind CLI to `../../public/css/admin.css` (committed, ships
+ * with the plugin); the plugin's public/ folder is published to
+ * `public/GP247/Plugins/MultiVendor/` on install, and the views load it via
+ * gp247_file(). A consuming app never needs Node.
+ *
+ * Build command: see resources/assets/README.md.
+ *
+ * No `@tailwind base` here on purpose — core's admin.css already provides the
+ * preflight reset on every screen this bundle is loaded on.
+ */
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    /* Vendor shell body: mirrors the base rules core's admin.css applies to
+       <body>, which this bundle deliberately does not re-emit (no preflight). */
+    .mvp-body {
+        @apply bg-gray-50 text-gray-800 antialiased dark:bg-gray-900 dark:text-gray-100;
+    }
+}
+
+/* Hide Alpine-controlled elements until Alpine initialises (no FOUC). Core's
+   admin.css declares the same rule; repeated here because the vendor shell can
+   render before/without it in edge cases (e.g. the portable auth layout). */
+[x-cloak] {
+    display: none !important;
+}

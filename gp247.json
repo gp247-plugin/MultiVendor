@@ -1,0 +1,15 @@
+{
+    "name": "MultiVendor (marketplace, Free)",
+    "image": "images/mvendor.jpg",
+    "auth": "GP247",
+    "email": "support@gp247.net",
+    "link": "https://GP247.net",
+    "configGroup": "Plugins",
+    "configCode": "Business",
+    "configKey": "MultiVendor",
+    "version": "1.0.0",
+    "requireCore": ["3.0"],
+    "requireUpdateFrom": "1.0",
+    "requireComposerPackages": ["gp247/shop"],
+    "requireGp247Extensions": []
+}
