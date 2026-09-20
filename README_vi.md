@@ -76,7 +76,7 @@ Nói ngắn gọn: **Multi-Vendor = một cái chợ cho nhiều người bán; 
 | [Hướng dẫn chi tiết](./multi-vendor-detail_vi.md) | Mô hình vận hành, các luồng chính (sơ đồ), tính năng theo vai, cấu hình sàn, quy trình trả tiền vendor, điều kiện & ràng buộc |
 | [Hướng dẫn cài đặt](./how_to_setup_vi.md) | Cài S-Cart 3.x, cài và kích hoạt plugin, tạo vendor đầu tiên, kiểm tra |
 | [Lịch sử phát hành](./Release-history/v1_vi.md) | Các phiên bản và thay đổi |
-| Trang sản phẩm | [gp247.net — MultiVendor](https://gp247.net/vi/product/multivendor-pro.html) |
+| Trang sản phẩm | [gp247.net — MultiVendor](https://gp247.net/vi/product/multi-vendor-pro.html) |
 
 ## So sánh Free và Pro
 **Ai mua Pro**: chủ sàn. Vendor và khách hàng không trả gì cho GP247 và không bao giờ thấy lời mời nâng cấp — bản Free chỉ cho chủ sàn thấy mỗi tính năng Pro sẽ nằm ở đâu, bấm vào là có trang giải thích.

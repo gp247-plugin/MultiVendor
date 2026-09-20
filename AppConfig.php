@@ -935,7 +935,7 @@ class AppConfig extends ExtensionConfigDefault
             $l('multi_vendor.pro.blurb_vendor', 'This feature is part of the Pro edition of the marketplace you sell on.', 'Tính năng này thuộc bản Pro của sàn mà bạn đang bán hàng.'),
             $l('multi_vendor.pro.vendor_note', 'Ask the marketplace to upgrade if you need it.', 'Nếu bạn cần, hãy đề nghị sàn nâng cấp.'),
             $l('multi_vendor.pro.cta', 'Upgrade to Pro', 'Nâng cấp Pro'),
-            $l('multi_vendor.pro.buy_url', 'https://gp247.net/en/product/multivendor-pro.html', 'https://gp247.net/vi/product/multivendor-pro.html'),
+            $l('multi_vendor.pro.buy_url', 'https://gp247.net/en/product/multi-vendor-pro.html', 'https://gp247.net/vi/product/multi-vendor-pro.html'),
             $l('multi_vendor.pro.list_title', 'What Pro adds', 'Bản Pro có gì'),
             $l('multi_vendor.pro.included', 'Included', 'Đang có'),
             $l('multi_vendor.pro.locked', 'Pro', 'Pro'),

@@ -76,7 +76,7 @@ In one line: **Multi-Vendor is a marketplace for other people's shops; Multi-Sto
 | [Detailed guide](./multi-vendor-detail_en.md) | Operating model, key workflows (diagrams), features by role, marketplace settings, vendor payout process, conditions & rules |
 | [Installation guide](./how_to_setup.md) | Install S-Cart 3.x, install and enable the plugin, create the first vendor, verify |
 | [Release history](./Release-history/v1.md) | Versions and changes |
-| Product page | [gp247.net — MultiVendor](https://gp247.net/en/product/multivendor-pro.html) |
+| Product page | [gp247.net — MultiVendor](https://gp247.net/en/product/multi-vendor-pro.html) |
 
 ## Free vs Pro
 **Who buys Pro**: the marketplace owner. Vendors and customers never pay anything to GP247 and never see an upgrade offer — the Free edition shows the owner where each Pro feature would live, and one click explains it.
