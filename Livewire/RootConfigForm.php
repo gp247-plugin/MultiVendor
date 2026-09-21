@@ -94,9 +94,10 @@ class RootConfigForm extends ConfigForm
 
     /**
      * On a Free marketplace every Pro-only setting stays visible but locked, with
-     * the feature it belongs to and a link to the upgrade gateway.
+     * the feature it belongs to, the state that is actually in effect, and a link
+     * to the upgrade gateway.
      *
-     * @return array<string, array{hint: string, url: string, label: string}>
+     * @return array<string, array{hint: string, url: string, label: string, value?: mixed}>
      */
     protected function lockedKeys(): array
     {
@@ -110,9 +111,45 @@ class RootConfigForm extends ConfigForm
                 'url' => ProFeatureCatalogue::gatewayUrl(ProFeatureCatalogue::ROOT, 'report'),
                 'label' => gp247_language_render('multi_vendor.pro.cta'),
             ];
+            $effective = $this->effectiveWhenLocked($key);
+            if ($effective !== null) {
+                $locked[$key]['value'] = $effective;
+            }
         }
 
         return $locked;
+    }
+
+    /**
+     * What a Pro-only setting is worth while the marketplace runs on Free.
+     *
+     * WHY the plugin answers this and not the shell: only the owner of a feature
+     * knows where its gate drops it. A switch falls to off, but the order-actions
+     * choice falls to the shipping preset — neither the first option nor the
+     * configured default ('confirm'), see VendorOrderPolicy::scope(). Reported by
+     * the user 2026-09-21: locked switches showed a tick, so a Free marketplace
+     * read as if the paid features were already running.
+     *
+     * Returning null means "no truer value than the stored one" — the dispute
+     * windows are parameters of a feature that is off, and the lock strip already
+     * says so.
+     *
+     * @param string $key Config key.
+     * @return mixed|null Effective value, or null to leave the stored one on screen.
+     *
+     * @aidlc-unit multi-vendor-pro
+     * @aidlc-story US-multi-vendor-pro-upgrade-funnel
+     */
+    private function effectiveWhenLocked(string $key)
+    {
+        if ($key === VendorOrderPolicy::CONFIG_KEY) {
+            return VendorOrderPolicy::SCOPE_SHIPPING;
+        }
+        if (in_array($this->fieldTypes()[$key] ?? 'text', ['bool', 'toggle'], true)) {
+            return false;
+        }
+
+        return null;
     }
 
     /**
