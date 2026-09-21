@@ -5,6 +5,12 @@
 ## Giới thiệu
 Trang này ghi các phiên bản của plugin MultiVendor và những thay đổi đáng chú ý trong mỗi bản, để chủ sàn biết mình đang dùng bản nào và nâng cấp thì được gì. Tính năng chi tiết xem [tài liệu Tổng quan sàn](https://gp247.net/vi/docs/plugin-multi-vendor/multi-vendor-overview.html) trên gp247.net.
 
+## Phiên bản 1.0.1
+- **Đường dẫn gian hàng đổi từ `/vendor` sang `/shop`.** Đường cũ trùng tên với một thư mục có thật trên máy chủ (`public/vendor/`, nơi các thư viện đặt tệp tĩnh), nên máy chủ web trả về lỗi **403** trước khi yêu cầu kịp vào tới S-Cart — danh bạ gian hàng không mở được. Danh bạ nay ở `/shop`, trang gian hàng ở `/shop/{mã}`. **Site đã chạy đường cũ**: đặt chuyển hướng 301 từ `/vendor/{mã}` sang `/shop/{mã}` để không mất thứ hạng tìm kiếm; đừng đặt lại giá trị cũ trong `.env` vì lỗi 403 sẽ quay lại. Muốn dùng đường dẫn khác thì chọn tên **không trùng** thư mục nào trong `public/` (tránh `vendor`, `storage`, `GP247`).
+- **Công tắc của bản Pro trên bản miễn phí nay hiển thị đúng thứ đang chạy.** Trước đây chúng hiện giá trị đã lưu, nên site từng dùng Pro rồi tắt đi sẽ thấy ô vẫn tick và *Phạm vi xử lý đơn* vẫn ghi "Xác nhận + giao hàng" — trong khi bản miễn phí chỉ chạy "Chỉ trạng thái vận chuyển". Giá trị bạn từng lưu **không mất**, mở lại Pro là trở về như cũ. Dải khoá cũng gọn lại: một nhãn duy nhất nằm cùng dòng với ô cấu hình.
+- **Dữ liệu mẫu tự lo plugin đánh giá.** `php artisan gp247:vendor-sample` nay cài sẵn *Product Rating & Review* để trang gian hàng có tab **Đánh giá**: đã cài thì giữ nguyên (chỉ bật nếu đang tắt), chưa cài thì cài từ thư mục plugin hoặc tải từ kho. Không cài được (không có mạng, bản cần giấy phép) thì lệnh **vẫn seed xong** và in ra câu lệnh cần chạy. Thêm `--skip-rating` nếu bạn tự quản lý plugin.
+- **Tài liệu chi tiết chuyển hẳn lên gp247.net.** Thư mục plugin chỉ còn README (và trang lịch sử này); hướng dẫn cài đặt, vận hành và tùy chỉnh nay có một nguồn duy nhất, luôn là bản mới nhất: [gp247.net/vi/docs/plugin-multi-vendor](https://gp247.net/vi/docs/plugin-multi-vendor/multi-vendor-overview.html).
+
 ## Phiên bản 1.0.0 — bản phát hành đầu tiên
 - **Tương thích:** `gp247/core` 3.0, `gp247/shop` 3.x (S-Cart 3.x). Yêu cầu Livewire.
 - **Đóng gói:** bản **MultiVendor** miễn phí (tối đa 3 gian hàng) và bản **MultiVendorPro** trả phí mở khoá toàn bộ. Cài Pro chồng lên Free, không phải cài lại.
