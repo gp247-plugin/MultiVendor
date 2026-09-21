@@ -3,7 +3,7 @@
 # Lịch sử phát hành — MultiVendor
 
 ## Giới thiệu
-Trang này ghi các phiên bản của plugin MultiVendor và những thay đổi đáng chú ý trong mỗi bản, để chủ sàn biết mình đang dùng bản nào và nâng cấp thì được gì. Tính năng chi tiết xem [Hướng dẫn chi tiết](../multi-vendor-detail_vi.md).
+Trang này ghi các phiên bản của plugin MultiVendor và những thay đổi đáng chú ý trong mỗi bản, để chủ sàn biết mình đang dùng bản nào và nâng cấp thì được gì. Tính năng chi tiết xem [tài liệu Tổng quan sàn](https://gp247.net/vi/docs/plugin-multi-vendor/multi-vendor-overview.html) trên gp247.net.
 
 ## Phiên bản 1.0.0 — bản phát hành đầu tiên
 - **Tương thích:** `gp247/core` 3.0, `gp247/shop` 3.x (S-Cart 3.x). Yêu cầu Livewire.

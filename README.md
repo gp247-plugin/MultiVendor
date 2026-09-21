@@ -71,12 +71,17 @@ Both plugins talk about "many stores", but they are **two different business mod
 In one line: **Multi-Vendor is a marketplace for other people's shops; Multi-Store is several shops of your own.** If every product is yours and you only need more domains, use Multi-Store instead: [gp247.net/en/product/multi-store-pro.html](https://gp247.net/en/product/multi-store-pro.html).
 
 ## Documentation
+The detailed guides live on the GP247 documentation site — **one source**, always the current version:
+
 | Document | Contents |
 | --- | --- |
-| [Detailed guide](./multi-vendor-detail_en.md) | Operating model, key workflows (diagrams), features by role, marketplace settings, vendor payout process, conditions & rules |
-| [Installation guide](./how_to_setup.md) | Install S-Cart 3.x, install and enable the plugin, create the first vendor, verify |
+| [Marketplace overview](https://gp247.net/en/docs/plugin-multi-vendor/multi-vendor-overview.html) | Operating model, the key workflows (diagrams), who can do what |
+| [Setup](https://gp247.net/en/docs/plugin-multi-vendor/multi-vendor-setup.html) | Install S-Cart 3.x, install and enable the plugin, create the first shop, sample data, verify |
+| [Operations](https://gp247.net/en/docs/plugin-multi-vendor/multi-vendor-operations.html) | Every marketplace setting (with its `admin_config` key), money and payouts, moderation, disputes, verification |
+| [Customisation](https://gp247.net/en/docs/plugin-multi-vendor/multi-vendor-customize.html) | Change wording, replace views in a template, developer hooks |
 | [Release history](./Release-history/v1.md) | Versions and changes |
 | Product page | [gp247.net — MultiVendor](https://gp247.net/en/product/multi-vendor-pro.html) |
+| Vietnamese version of this README | [README_vi.md](./README_vi.md) |
 
 ## Free vs Pro
 **Who buys Pro**: the marketplace owner. Vendors and customers never pay anything to GP247 and never see an upgrade offer — the Free edition shows the owner where each Pro feature would live, and one click explains it.

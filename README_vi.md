@@ -71,12 +71,17 @@ Hai plugin cùng nói về "nhiều cửa hàng" nhưng là **hai mô hình kinh
 Nói ngắn gọn: **Multi-Vendor = một cái chợ cho nhiều người bán; Multi-Store = nhiều cửa hàng của chính bạn.** Nếu tất cả hàng hoá đều là của bạn và bạn chỉ cần nhiều tên miền, hãy dùng Multi-Store: [gp247.net/vi/product/multi-store-pro.html](https://gp247.net/vi/product/multi-store-pro.html).
 
 ## Tài liệu
+Hướng dẫn chi tiết nằm trên trang tài liệu của GP247 — **một nguồn duy nhất**, luôn là bản mới nhất:
+
 | Tài liệu | Nội dung |
 | --- | --- |
-| [Hướng dẫn chi tiết](./multi-vendor-detail_vi.md) | Mô hình vận hành, các luồng chính (sơ đồ), tính năng theo vai, cấu hình sàn, quy trình trả tiền vendor, điều kiện & ràng buộc |
-| [Hướng dẫn cài đặt](./how_to_setup_vi.md) | Cài S-Cart 3.x, cài và kích hoạt plugin, tạo vendor đầu tiên, kiểm tra |
+| [Tổng quan sàn](https://gp247.net/vi/docs/plugin-multi-vendor/multi-vendor-overview.html) | Mô hình vận hành, các luồng chính (sơ đồ), ai làm được gì |
+| [Cài đặt](https://gp247.net/vi/docs/plugin-multi-vendor/multi-vendor-setup.html) | Cài S-Cart 3.x, cài và kích hoạt plugin, tạo gian hàng đầu tiên, dữ liệu mẫu, kiểm tra |
+| [Vận hành](https://gp247.net/vi/docs/plugin-multi-vendor/multi-vendor-operations.html) | Toàn bộ cấu hình sàn (kèm khoá `admin_config`), tiền và chi trả, kiểm duyệt, khiếu nại, xác minh |
+| [Tùy chỉnh](https://gp247.net/vi/docs/plugin-multi-vendor/multi-vendor-customize.html) | Đổi chữ hiển thị, thay view trong template, điểm cắm cho lập trình viên |
 | [Lịch sử phát hành](./Release-history/v1_vi.md) | Các phiên bản và thay đổi |
 | Trang sản phẩm | [gp247.net — MultiVendor](https://gp247.net/vi/product/multi-vendor-pro.html) |
+| Bản tiếng Anh của README này | [README.md](./README.md) |
 
 ## So sánh Free và Pro
 **Ai mua Pro**: chủ sàn. Vendor và khách hàng không trả gì cho GP247 và không bao giờ thấy lời mời nâng cấp — bản Free chỉ cho chủ sàn thấy mỗi tính năng Pro sẽ nằm ở đâu, bấm vào là có trang giải thích.
