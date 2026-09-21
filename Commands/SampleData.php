@@ -7,6 +7,7 @@ use App\GP247\Plugins\MultiVendor\Models\VendorCategoryDescription;
 use App\GP247\Plugins\MultiVendor\Models\VendorProductCategory;
 use App\GP247\Plugins\MultiVendor\Models\VendorUser;
 use Carbon\Carbon;
+use GP247\Core\Library\ExtensionInstaller;
 use GP247\Core\Models\AdminConfig;
 use GP247\Core\Models\AdminStore;
 use GP247\Core\Models\AdminStoreDescription;
@@ -19,6 +20,7 @@ use GP247\Shop\Models\ShopProductCategory;
 use GP247\Shop\Models\ShopProductDescription;
 use GP247\Shop\Models\ShopSupplier;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -52,7 +54,8 @@ class SampleData extends Command
      *
      * @var string
      */
-    protected $signature = 'gp247:vendor-sample';
+    protected $signature = 'gp247:vendor-sample
+        {--skip-rating : Do not touch the ProductRating plugin (offline site, or you manage plugins yourself)}';
 
     /**
      * The console command description.
@@ -72,6 +75,14 @@ class SampleData extends Command
         'ST-VENDOR-02' => ['code' => 'vendor02', 'en' => 'Vendor 02', 'vi' => 'Nhà bán lẻ 02'],
         'ST-VENDOR-03' => ['code' => 'vendor03', 'en' => 'Vendor 03', 'vi' => 'Nhà bán lẻ 03'],
     ];
+
+    /**
+     * The review plugin a demo marketplace needs: the shop page's Reviews tab is
+     * rendered by ProductRating (ADR-multi-vendor-storefront-shop-page), so
+     * without it a seeded demo is missing exactly the trust signals it should be
+     * showing off.
+     */
+    private const RATING_PLUGIN = 'ProductRating';
 
     /** Password of every sample vendor login. Test sites only. */
     private const SAMPLE_PASSWORD = '123456';
@@ -116,6 +127,12 @@ class SampleData extends Command
             return self::FAILURE;
         }
 
+        // WHY before the transaction and not inside it: installing a plugin runs
+        // Schema DDL, MySQL auto-commits DDL, and that would close the seed
+        // transaction half way through — which this one would then re-run, since
+        // it retries twice. RISK-TECH-mv-sample-ddl-in-transaction.
+        $this->ensureRatingPlugin();
+
         try {
             DB::connection(GP247_DB_CONNECTION)->transaction(function () {
                 $this->cleanData();
@@ -157,6 +174,114 @@ class SampleData extends Command
         $this->info('Sample data generation completed successfully!');
 
         return self::SUCCESS;
+    }
+
+    /**
+     * Settle the review plugin so the seeded demo has a Reviews tab.
+     *
+     * Delegates the install itself to gp247:ext-install, which already tells the
+     * three states apart that matter here: files on disk but not installed (it
+     * activates them locally) versus not on disk at all (it resolves the item in
+     * the marketplace and downloads it). Re-implementing that here would also
+     * re-implement its marketplace resolution and its "API failed" versus "not
+     * found" distinction — both of which have cost this project a named risk.
+     *
+     * Never fails the command: a marketplace this site cannot reach, or a paid
+     * item without a license, costs the demo its Reviews tab, not its data.
+     *
+     * @return void
+     *
+     * @aidlc-unit multi-vendor-pro
+     * @aidlc-story US-multi-vendor-pro-sales-docs-sync
+     */
+    protected function ensureRatingPlugin(): void
+    {
+        // WHY skip under PHPUnit: the tests that exercise this command run inside
+        // DatabaseTransactions, and an install's DDL would auto-commit and tear
+        // that wrapper down. The decision itself is unit-tested through
+        // ratingPluginAction(); doing it for real belongs to a real site.
+        if (app()->runningUnitTests()) {
+            return;
+        }
+
+        switch ($this->ratingPluginAction((bool) $this->option('skip-rating'))) {
+            case 'skipped':
+                $this->line('Review plugin: skipped (--skip-rating).');
+
+                return;
+
+            case 'already_active':
+                $this->info('Review plugin: already installed and on.');
+
+                return;
+
+            case 'enable':
+                $response = (new ExtensionInstaller)->enable('Plugins', self::RATING_PLUGIN);
+                if (is_array($response) && ($response['error'] ?? 1) == 0) {
+                    $this->info('Review plugin: was installed but off — switched on.');
+
+                    return;
+                }
+                $this->warnRatingPlugin('could not switch it on: '.(is_array($response) ? ($response['msg'] ?? '') : ''));
+
+                return;
+
+            default:
+                $exit = Artisan::call('gp247:ext-install', ['--type' => 'plugin', '--key' => [self::RATING_PLUGIN]]);
+                if ($exit !== 0) {
+                    $this->warnRatingPlugin(trim(Artisan::output()));
+
+                    return;
+                }
+                // A fresh install leaves the plugin installed; switch it on too,
+                // otherwise the Reviews tab still will not render.
+                if (!gp247_extension_check_active('Plugins', self::RATING_PLUGIN)) {
+                    (new ExtensionInstaller)->enable('Plugins', self::RATING_PLUGIN);
+                }
+                $this->info('Review plugin: installed and switched on.');
+        }
+    }
+
+    /**
+     * What this command would do about the review plugin, given the state of the
+     * site. Pure: reads the plugin's state, changes nothing.
+     *
+     * @param bool $skip Whether the operator asked to leave the plugin alone.
+     * @return string One of skipped|already_active|enable|install.
+     *
+     * @aidlc-unit multi-vendor-pro
+     * @aidlc-story US-multi-vendor-pro-sales-docs-sync
+     */
+    protected function ratingPluginAction(bool $skip = false): string
+    {
+        if ($skip) {
+            return 'skipped';
+        }
+        if (!gp247_extension_check_installed('Plugins', self::RATING_PLUGIN)) {
+            // On disk or marketplace-only is gp247:ext-install's distinction.
+            return 'install';
+        }
+
+        return gp247_extension_check_active('Plugins', self::RATING_PLUGIN) ? 'already_active' : 'enable';
+    }
+
+    /**
+     * Report a review-plugin problem without failing the seed, and hand over the
+     * exact command that finishes the job.
+     *
+     * @param string $reason What went wrong.
+     * @return void
+     */
+    protected function warnRatingPlugin(string $reason): void
+    {
+        $this->warn('Review plugin ('.self::RATING_PLUGIN.') not set up — the shop pages will have no Reviews tab.');
+        if ($reason !== '') {
+            $this->line('  Reason: '.$reason);
+        }
+        $this->line('  Free:  php artisan gp247:ext-install --type=plugin --key='.self::RATING_PLUGIN);
+        $this->line('  Paid:  php artisan gp247:ext-install --type=plugin --key='.self::RATING_PLUGIN.' --paid --license=<license>');
+        $this->line('  If the marketplace refused this domain: php artisan gp247:ext-register-license');
+        $this->line('  Sample data itself was seeded; re-run this command after installing, or use --skip-rating.');
     }
 
     /**

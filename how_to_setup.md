@@ -113,6 +113,17 @@ Three stores is the Free edition's vendor limit, so the sample fits either editi
 command again replaces its own sample stores instead of adding more, and it never touches a store
 you created yourself. Change or delete these accounts before a site goes live.
 
+The command also **settles the *Product Rating & Review* plugin** so the store pages come with their
+**Reviews** tab: an installed plugin is left as it is (only switched on if it was off), and one that
+is not installed gets installed — from the plugin folder when the files are already on the site,
+otherwise downloaded from the plugin library. If the site cannot reach the internet, or your copy
+needs a license, the command **still finishes seeding** and simply prints the command to run
+afterwards. To leave other plugins alone entirely:
+
+```bash
+php artisan gp247:vendor-sample --skip-rating
+```
+
 ## Step 5: Verify
 1. Open `https://your-domain/shop/vendor01` — the store page shows the vendor's categories and products (empty until products are posted).
 2. Sign in to `/vendor_admin`, create a product; if auto-approve is off, approve it in the S-Cart admin → Products.

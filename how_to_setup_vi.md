@@ -113,6 +113,15 @@ Ba gian hàng đúng bằng giới hạn của bản miễn phí, nên dữ li�
 sẽ thay thế chính các gian hàng mẫu đó chứ không tạo thêm, và không đụng tới gian hàng bạn tự tạo. Hãy đổi
 hoặc xoá các tài khoản này trước khi đưa site lên chạy thật.
 
+Lệnh còn **tự lo plugin *Product Rating & Review*** để trang gian hàng có sẵn tab **Đánh giá**: plugin đã cài
+thì giữ nguyên (chỉ bật lên nếu đang tắt), chưa cài thì cài — lấy từ thư mục plugin nếu đã có sẵn trên site,
+không có thì tải từ kho plugin. Nếu site không ra được Internet, hoặc bản bạn dùng cần giấy phép, lệnh **vẫn
+seed xong dữ liệu mẫu** và chỉ in ra câu lệnh cần chạy để cài tiếp. Không muốn lệnh chạm tới plugin nào khác:
+
+```bash
+php artisan gp247:vendor-sample --skip-rating
+```
+
 ## Bước 5: Kiểm tra
 1. Mở `https://ten-mien-cua-ban/shop/vendor01` — trang gian hàng hiện danh mục và sản phẩm của vendor (trống nếu chưa đăng sản phẩm).
 2. Đăng nhập `/vendor_admin`, tạo một sản phẩm; nếu sàn tắt tự duyệt, vào admin S-Cart → Sản phẩm để duyệt.
@@ -188,4 +197,4 @@ Muốn đổi chữ hiển thị, nội dung email, giao diện trang gian hàng
 
 ---
 
-<sub>📅 **Cập nhật lần cuối:** 2026-09-20 · ✍️ **Tác giả (Author):** GP247</sub>
+<sub>📅 **Cập nhật lần cuối:** 2026-09-21 · ✍️ **Tác giả (Author):** GP247</sub>
