@@ -144,7 +144,10 @@ class SampleData extends Command
             array_map(
                 fn (array $store) => [
                     $store['en'],
-                    '/vendor/'.$store['code'],
+                    // WHY the route and not a literal: the marketplace prefix is
+                    // configurable (MULTIVENDOR_FRONT_PATH), so a hard-coded
+                    // '/vendor/…' printed a path that no longer exists.
+                    gp247_route_front('MultiVendor.detail', ['code' => $store['code']]),
                     $this->loginOf($store['code']),
                     self::SAMPLE_PASSWORD,
                 ],

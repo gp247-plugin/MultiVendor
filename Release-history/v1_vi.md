@@ -11,7 +11,7 @@ Trang này ghi các phiên bản của plugin MultiVendor và những thay đổ
 - **Bản miễn phí luôn cho biết bản Pro có gì:** menu và thanh bên vẫn hiện đủ các màn Pro, bấm vào là trang giải thích tính năng kèm danh sách đầy đủ. Cài Pro xong, chính những lối vào đó mở thẳng màn thật — không phải sắp lại menu.
 
 ### Mô hình sàn
-- Sàn nhiều người bán trên **một domain**: gian hàng tại `/vendor/{code}`, danh bạ `/vendor`, giỏ tách theo gian hàng, **mỗi vendor một đơn**, sàn thu tiền và trả hoa hồng theo kỳ.
+- Sàn nhiều người bán trên **một domain**: gian hàng tại `/shop/{code}`, danh bạ `/shop`, giỏ tách theo gian hàng, **mỗi vendor một đơn**, sàn thu tiền và trả hoa hồng theo kỳ.
 - Trang gian hàng có bìa, logo, banner, tab Sản phẩm / Đánh giá / Thông tin, tìm kiếm trong gian hàng.
 - **Chỉ số tin cậy công khai** trên trang gian hàng: tỷ lệ khiếu nại, thời gian chuẩn bị hàng, tỷ lệ trả lời khiếu nại và đánh giá — tính trên 90 ngày gần nhất, ẩn khi gian hàng chưa đủ đơn.
 - Nhãn **tên gian hàng kèm biểu tượng** trên thẻ sản phẩm và trang chi tiết, bấm vào mở trang gian hàng.

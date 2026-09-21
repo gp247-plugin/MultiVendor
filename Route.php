@@ -299,7 +299,7 @@ if (gp247_config_global('MultiVendor')) {
                 'namespace' => 'App\GP247\Plugins\MultiVendor\Controllers',
             ], 
             function () {
-                // S2-5: /vendor is the marketplace directory; a store page needs its code.
+                // S2-5: the prefix itself is the marketplace directory; a store page needs its code.
                 Route::get('/', 'FrontController@vendorIndex')->name('MultiVendor.index');
                 Route::get('/{code}', 'FrontController@vendorDetail')->name('MultiVendor.detail');
                 // S3-3 (Pro): a signed-in customer opens / withdraws a dispute on their own order

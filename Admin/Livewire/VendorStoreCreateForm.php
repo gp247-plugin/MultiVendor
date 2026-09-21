@@ -177,7 +177,7 @@ class VendorStoreCreateForm extends GP247AdminComponent
             return;
         }
 
-        // WHY: the code becomes the marketplace path segment (/vendor/{code}),
+        // WHY: the code becomes the marketplace path segment (/shop/{code}),
         // so it is url-formatted and capped at 20 chars before the unique check,
         // exactly as the v1 controller did.
         $this->store['code'] = gp247_word_limit(gp247_word_format_url((string) $this->store['code']), 20);

@@ -1,5 +1,5 @@
 {{--
-    Shop header shared by every /vendor/{code}/* page (S2-5, Shopee-style):
+    Shop header shared by every /shop/{code}/* page (S2-5, Shopee-style):
     cover (og_image), avatar (logo), name, short description, metrics
     (sellable products · seller rating from ProductRating when enabled · member
     since), contact line, tab navigation and the Pro quick-order button.

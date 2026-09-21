@@ -105,16 +105,16 @@ category filter both have something to show:
 
 | Store page | Vendor login | Password |
 | --- | --- | --- |
-| `/vendor/vendor01` | `vendor01@gp247.local` | `123456` |
-| `/vendor/vendor02` | `vendor02@gp247.local` | `123456` |
-| `/vendor/vendor03` | `vendor03@gp247.local` | `123456` |
+| `/shop/vendor01` | `vendor01@gp247.local` | `123456` |
+| `/shop/vendor02` | `vendor02@gp247.local` | `123456` |
+| `/shop/vendor03` | `vendor03@gp247.local` | `123456` |
 
 Three stores is the Free edition's vendor limit, so the sample fits either edition. Running the
 command again replaces its own sample stores instead of adding more, and it never touches a store
 you created yourself. Change or delete these accounts before a site goes live.
 
 ## Step 5: Verify
-1. Open `https://your-domain/vendor/vendor01` — the store page shows the vendor's categories and products (empty until products are posted).
+1. Open `https://your-domain/shop/vendor01` — the store page shows the vendor's categories and products (empty until products are posted).
 2. Sign in to `/vendor_admin`, create a product; if auto-approve is off, approve it in the S-Cart admin → Products.
 3. Buy products from two different vendors in one cart and check out — you must get **two orders**, each belonging to one store.
 4. Check system health:
@@ -128,7 +128,7 @@ you created yourself. Change or delete these accounts before a site goes live.
 Add to `.env` to change the default paths, then run `php artisan gp247:cache-rebuild`:
 
 ```env
-MULTIVENDOR_FRONT_PATH=vendor
+MULTIVENDOR_FRONT_PATH=shop
 MULTIVENDOR_ADMIN_PATH=vendor_admin
 PREFIX_QUICK_ORDER_VENDOR=quick-order
 PREFIX_CATEGORY_VENDOR=category-vendor
@@ -136,14 +136,15 @@ PREFIX_CATEGORY_VENDOR=category-vendor
 
 | Variable | Which path it changes | Default |
 | --- | --- | --- |
-| `MULTIVENDOR_FRONT_PATH` | The store directory and the store pages customers see: `/vendor`, `/vendor/{code}` | `vendor` |
+| `MULTIVENDOR_FRONT_PATH` | The store directory and the store pages customers see: `/shop`, `/shop/{code}` | `shop` |
 | `MULTIVENDOR_ADMIN_PATH` | The vendor's own admin area: `/vendor_admin`, including its login and register pages | `vendor_admin` |
-| `PREFIX_QUICK_ORDER_VENDOR` | The last segment of the quick-order page: `/vendor/{code}/quick-order` | `quick-order` |
+| `PREFIX_QUICK_ORDER_VENDOR` | The last segment of the quick-order page: `/shop/{code}/quick-order` | `quick-order` |
 | `PREFIX_CATEGORY_VENDOR` | The store's own category pages | `category-vendor` |
 
-Three things to know before you change them:
+Four things to know before you change them:
 
 - **Do not collide** with a path that already exists: the admin prefix (`gp247_admin` by default), the other variables in this table, or a storefront page/product slug. A collision leaves one of the two pages unreachable.
+- **Never use a name that exists as a folder inside `public/`** — today that is `vendor`, `storage` and `GP247`. The web server serves a real folder itself and never hands the request to S-Cart, so the page answers **403 Forbidden** (or a blank listing) no matter how the route is written. This is why the store path is `shop` and **not** `vendor`: `public/vendor/` is where file-manager assets live. The symptom is easy to misread — the store pages `/{path}/{code}` keep working, only the directory page `/{path}` breaks, and turning on SEO language prefixes hides it (`/en/vendor` does not collide).
 - **The old paths start returning 404.** On a live site that search engines have already indexed, set up 301 redirects from the old paths to the new ones before you switch.
 - Write the value **without a leading or trailing `/`**. On hosting without a command line, delete `bootstrap/cache/config.php` (if it exists) after editing `.env` instead of running `gp247:cache-rebuild`.
 
@@ -152,7 +153,7 @@ To change wording, e-mail content, the store page layout or staff permissions, s
 ## Conditions & Rules (know before you act)
 - **The plugin refuses to install if MultiStore is installed** — both use the shared store mechanism under different models; remove MultiStore first.
 - **`gp247/shop` must be installed** — the plugin relies on shop products, cart and orders.
-- **The store code is unique, at most 20 characters** — it becomes the path `/vendor/{code}`.
+- **The store code is unique, at most 20 characters** — it becomes the path `/shop/{code}`.
 - **Uninstalling removes vendor accounts, store categories and the vendor payout ledger** (S-Cart products and orders are kept) — export what you need before uninstalling.
 
 ## Troubleshooting
@@ -177,9 +178,9 @@ To change wording, e-mail content, the store page layout or staff permissions, s
 
 → Vendors: `/vendor_admin`. Marketplace admin: the regular S-Cart admin area.
 
-**Q4: Can I rename the `/vendor` path?**
+**Q4: Can I rename the `/shop` path?**
 
-→ Yes, set `MULTIVENDOR_FRONT_PATH` in `.env` and run `php artisan gp247:cache-rebuild`.
+→ Yes, set `MULTIVENDOR_FRONT_PATH` in `.env` and run `php artisan gp247:cache-rebuild`. Pick a name that is not a folder under `public/` (so not `vendor`, `storage` or `GP247`) — see the four notes above.
 
 **Q5: Can the sample data be removed?**
 

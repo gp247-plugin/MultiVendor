@@ -6,7 +6,7 @@
 Tài liệu này mô tả **đúng những gì plugin MultiVendor đang làm được**: mô hình vận hành sàn, tính năng cho từng vai (khách hàng, vendor, chủ sàn), các cấu hình của sàn, quy trình trả tiền cho vendor và các điều kiện cần biết trước khi thao tác. Dành cho chủ sàn và người vận hành; đọc xong bạn biết sàn chạy thế nào và cấu hình gì trước khi mở cho vendor. Phần cài đặt xem riêng ở [Hướng dẫn cài đặt](./how_to_setup_vi.md).
 
 ## Mô hình vận hành: sàn chung một domain
-1. **Một storefront cho mọi vendor.** Sản phẩm của tất cả vendor hiện chung trên website của sàn. Mỗi vendor có trang gian hàng tại `/vendor/{code}` (`code` là mã gian hàng đặt khi tạo), gồm danh sách sản phẩm và danh mục riêng của gian hàng.
+1. **Một storefront cho mọi vendor.** Sản phẩm của tất cả vendor hiện chung trên website của sàn. Mỗi vendor có trang gian hàng tại `/shop/{code}` (`code` là mã gian hàng đặt khi tạo), gồm danh sách sản phẩm và danh mục riêng của gian hàng.
 2. **Giỏ hàng nhóm theo gian hàng.** Khách bỏ sản phẩm của nhiều vendor vào một giỏ; khi thanh toán, hệ thống tách thành **mỗi vendor một đơn hàng** (mỗi đơn gắn `store_id` của vendor đó).
 3. **Sàn thu tiền.** Cổng thanh toán chỉ chủ sàn cấu hình. Vendor không nhập khóa thanh toán, không tự thu.
 4. **Sàn trả vendor theo hoa hồng.** Định kỳ, chủ sàn chạy "xử lý thanh toán": hệ thống gom các đơn **đã hoàn thành** của từng vendor, giữ lại tỷ lệ hoa hồng và ghi sổ số tiền phải trả (xem mục Quy trình trả tiền).
@@ -15,9 +15,9 @@ Tài liệu này mô tả **đúng những gì plugin MultiVendor đang làm đ�
 Đường dẫn quan trọng (mặc định, đổi được qua `.env` — xem Hướng dẫn cài đặt):
 | Vai | Đường dẫn |
 | --- | --- |
-| Danh bạ gian hàng (tìm theo tên, số sản phẩm, đánh giá) | `/vendor` |
-| Trang gian hàng (khách xem) | `/vendor/{code}` — header (ảnh bìa, logo, tên, số sản phẩm, đánh giá, ngày tham gia, liên hệ) + tab **Sản phẩm** / **Đánh giá** / **Thông tin** (`?tab=`) |
-| Đặt hàng nhanh theo gian hàng | `/vendor/{code}/quick-order` (khi sàn bật "Đặt hàng nhanh") |
+| Danh bạ gian hàng (tìm theo tên, số sản phẩm, đánh giá) | `/shop` |
+| Trang gian hàng (khách xem) | `/shop/{code}` — header (ảnh bìa, logo, tên, số sản phẩm, đánh giá, ngày tham gia, liên hệ) + tab **Sản phẩm** / **Đánh giá** / **Thông tin** (`?tab=`) |
+| Đặt hàng nhanh theo gian hàng | `/shop/{code}/quick-order` (khi sàn bật "Đặt hàng nhanh") |
 | Khu quản trị vendor | `/vendor_admin` |
 | Quản trị sàn (root admin) | khu admin của S-Cart, menu **Chợ bán hàng** — Gian hàng người bán · Tài khoản người bán · Cấu hình nhanh · Thanh toán, cùng các màn Pro Báo cáo · Báo cáo hoa hồng · Hàng chờ duyệt · Khiếu nại · Gói gian hàng |
 
@@ -92,7 +92,7 @@ sequenceDiagram
 ## Tính năng theo vai
 
 ### Khách hàng
-- Duyệt và mua sản phẩm của mọi vendor trên cùng website; **danh bạ gian hàng** `/vendor`; mỗi gian hàng có **trang riêng kiểu Shopee**: header thương hiệu, banner của gian hàng, tab **Sản phẩm** (tìm trong gian hàng, lọc danh mục, sắp xếp), tab **Đánh giá** (đánh giá mọi sản phẩm gian hàng đó bán — cần plugin *Product Rating & Review* bật cho gian hàng) và tab **Thông tin**.
+- Duyệt và mua sản phẩm của mọi vendor trên cùng website; **danh bạ gian hàng** `/shop`; mỗi gian hàng có **trang riêng kiểu Shopee**: header thương hiệu, banner của gian hàng, tab **Sản phẩm** (tìm trong gian hàng, lọc danh mục, sắp xếp), tab **Đánh giá** (đánh giá mọi sản phẩm gian hàng đó bán — cần plugin *Product Rating & Review* bật cho gian hàng) và tab **Thông tin**.
 - Giỏ hàng, danh sách yêu thích, so sánh, lịch sử đơn — toàn bộ tính năng khách hàng của S-Cart.
 - **Đặt hàng nhanh (B2B)** cho một gian hàng (bản Pro, khi sàn bật): tìm theo SKU/tên hoặc danh mục gian hàng, nhập số lượng nhiều sản phẩm một lần, **dán danh sách "SKU, số lượng"**, **đặt lại theo đơn cũ** của mình tại gian hàng (khi đã đăng nhập), **xuất báo giá Excel**; hệ thống kiểm tra từng dòng (số lượng tối thiểu, tồn kho theo cài đặt gian hàng, sản phẩm đúng gian hàng và đang bán) trước khi thêm vào giỏ.
 
@@ -203,8 +203,8 @@ Hệ thống ưu tiên file của template, không có thì mới dùng file c�
 
 | View | Trang |
 | --- | --- |
-| `vendor_index` | Danh bạ gian hàng `/vendor` |
-| `vendor_home` | Trang gian hàng `/vendor/{code}` |
+| `vendor_index` | Danh bạ gian hàng `/shop` |
+| `vendor_home` | Trang gian hàng `/shop/{code}` |
 | `vendor_info` | Tab **Thông tin** của gian hàng |
 | `vendor_product_list` | Lưới sản phẩm trong trang gian hàng |
 | `hooks.order_dispute_box` | Hộp khiếu nại dưới trang đơn của khách (Pro) |
@@ -216,7 +216,7 @@ Các màn Chợ bán hàng nằm trong hệ phân quyền chung của S-Cart: **
 - **Không sửa file trong thư mục plugin.** Mọi thay đổi ở `app/GP247/Plugins/MultiVendor/` sẽ mất khi cập nhật. Dùng ba đường chính thức: chuỗi ngôn ngữ (ở trên), view của template (ở trên), và điểm cắm dưới đây.
 - **Điểm cắm trang đơn của khách**: plugin gắn hộp khiếu nại vào `gp247-config.front.plugin_hooks` ở vị trí `shop_order_detail_bottom`. Plugin khác dùng đúng cơ chế này để chèn nội dung của mình, không cần sửa template.
 - **Giá sản phẩm**: giá theo nhóm khách của gian hàng (Pro) cắm vào seam `gp247-config.shop.price_resolvers` của `gp247/shop`, nên giỏ hàng, thanh toán, đặt hàng nhanh và báo giá luôn thấy cùng một giá. Plugin giá khác đăng ký thêm resolver theo cùng khuôn.
-- **Đường dẫn gian hàng trong code**: dùng helper của plugin thay vì tự nối chuỗi `/vendor/...`, để đổi `.env` là mọi link đổi theo.
+- **Đường dẫn gian hàng trong code**: dùng helper của plugin thay vì tự nối chuỗi `/shop/...`, để đổi `.env` là mọi link đổi theo.
 - **Cập nhật an toàn**: plugin tự hội tụ (menu, chuỗi ngôn ngữ, bảng dữ liệu) ở mọi đường vào — cài mới, cài lại, cập nhật — và tự sửa khối menu khi mở màn Cấu hình nhanh. Sau khi thay file bằng tay, chạy `php artisan gp247:cache-rebuild` rồi mở một lần màn **Cấu hình nhanh**.
 
 ## Quy trình trả tiền cho vendor
@@ -233,7 +233,7 @@ Ví dụ: hoa hồng 10%, vendor A có 3 đơn hoàn thành tổng 5.000.000 VND
 - **Không thể cài MultiVendor (và MultiVendorPro) khi website đang cài MultiStore / MultiStorePro** — hai mô hình kinh doanh khác nhau dùng chung bảng cửa hàng với ngữ nghĩa khác nhau; trình cài dừng ngay, không ghi gì. Gỡ plugin multi-store trước rồi cài lại (chiều ngược lại MultiStore cũng chặn như vậy).
 
 **Khi tạo vendor / gian hàng**
-- **Mã gian hàng là duy nhất, tối đa 20 ký tự** — mã dùng làm đường dẫn `/vendor/{code}`, trùng sẽ không biết trỏ tới ai.
+- **Mã gian hàng là duy nhất, tối đa 20 ký tự** — mã dùng làm đường dẫn `/shop/{code}`, trùng sẽ không biết trỏ tới ai.
 - **Mỗi tài khoản vendor gắn đúng một gian hàng** — quyền và dữ liệu (đơn, sản phẩm) phân theo gian hàng đó.
 - **Tài khoản vendor bị khóa hoặc gian hàng đang đóng thì không vào được khu vendor** — hệ thống chuyển tới trang "tài khoản chưa kích hoạt"; admin cần mở lại.
 
@@ -335,7 +335,7 @@ Ví dụ: hoa hồng 10%, vendor A có 3 đơn hoàn thành tổng 5.000.000 VND
 
 **Câu 8: Vendor có trang web độc lập trên tên miền của họ không?**
 
-→ Không. Mô hình duy nhất là sàn chung trên một domain; gian hàng ở `/vendor/{code}`.
+→ Không. Mô hình duy nhất là sàn chung trên một domain; gian hàng ở `/shop/{code}`.
 
 **Câu 9: Cài rồi có dữ liệu mẫu để thử không?**
 
@@ -343,4 +343,4 @@ Ví dụ: hoa hồng 10%, vendor A có 3 đơn hoàn thành tổng 5.000.000 VND
 
 ---
 
-<sub>📅 **Cập nhật lần cuối:** 2026-09-20 · ✍️ **Tác giả (Author):** GP247</sub>
+<sub>📅 **Cập nhật lần cuối:** 2026-09-21 · ✍️ **Tác giả (Author):** GP247</sub>

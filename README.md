@@ -21,7 +21,7 @@ Features marked **Pro** need `MultiVendorPro` installed next to the free plugin.
 
 | Feature | What it does | Edition |
 | --- | --- | --- |
-| Store directory and store pages | `/vendor` lists every store; each store has its own page at `/vendor/{code}` with cover, logo, banners, its own categories and three tabs — Products · Reviews · About | Free |
+| Store directory and store pages | `/shop` lists every store; each store has its own page at `/shop/{code}` with cover, logo, banners, its own categories and three tabs — Products · Reviews · About | Free |
 | Vendor label on products | Product cards show the name and icon of the store selling them | Free |
 | Cart split per store | Shoppers buy from several stores in one checkout; the system creates one order per store | Free |
 | Public trust signals | Complaint rate, typical handling time, share of complaints and reviews answered; computed over 90 days, hidden until the store has enough orders | Free |
@@ -62,7 +62,7 @@ Both plugins talk about "many stores", but they are **two different business mod
 |---|---|---|
 | Who owns the goods | **Independent vendors** trading on your marketplace | **One owner** — your own business |
 | Model | Marketplace | A chain of stores / several brands of the same owner |
-| Domains | **One domain**; each store is a page at `/vendor/{code}` | **One domain per store** |
+| Domains | **One domain**; each store is a page at `/shop/{code}` | **One domain per store** |
 | Who lists products | Each vendor lists their own, the marketplace approves | You do, choosing which store a product belongs to |
 | Money flow | The marketplace collects, **keeps a commission** and pays vendors per period | The money is yours, nothing is shared |
 | Who signs in to administer | Vendors use their own `/vendor_admin`, scoped to their store | You (plus per-store administrators in Multi-Store Pro) |
@@ -116,7 +116,7 @@ Free is a working marketplace for up to 3 vendors. Pro is a second plugin instal
 
 **Q2: Do vendors get a separate website or domain name?**
 
-→ No. Every store lives on the marketplace domain, reached at `/vendor/{store-code}`.
+→ No. Every store lives on the marketplace domain, reached at `/shop/{store-code}`.
 
 **Q3: Who collects the customer's money?**
 

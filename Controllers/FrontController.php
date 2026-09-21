@@ -47,7 +47,8 @@ class FrontController extends RootFrontController
     }
 
     /**
-     * /vendor — open stores as cards with a name search.
+     * The marketplace directory (MULTIVENDOR_FRONT_PATH, '/shop' by default)
+     * — open stores as cards with a name search.
      *
      * @aidlc-unit multi-vendor-pro
      * @aidlc-story US-multi-vendor-pro-storefront-shop-page

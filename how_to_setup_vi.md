@@ -105,16 +105,16 @@ lẫn bộ lọc danh mục đều có nội dung để xem:
 
 | Trang gian hàng | Tài khoản vendor | Mật khẩu |
 | --- | --- | --- |
-| `/vendor/vendor01` | `vendor01@gp247.local` | `123456` |
-| `/vendor/vendor02` | `vendor02@gp247.local` | `123456` |
-| `/vendor/vendor03` | `vendor03@gp247.local` | `123456` |
+| `/shop/vendor01` | `vendor01@gp247.local` | `123456` |
+| `/shop/vendor02` | `vendor02@gp247.local` | `123456` |
+| `/shop/vendor03` | `vendor03@gp247.local` | `123456` |
 
 Ba gian hàng đúng bằng giới hạn của bản miễn phí, nên dữ liệu mẫu dùng được cho cả hai bản. Chạy lại lệnh
 sẽ thay thế chính các gian hàng mẫu đó chứ không tạo thêm, và không đụng tới gian hàng bạn tự tạo. Hãy đổi
 hoặc xoá các tài khoản này trước khi đưa site lên chạy thật.
 
 ## Bước 5: Kiểm tra
-1. Mở `https://ten-mien-cua-ban/vendor/vendor01` — trang gian hàng hiện danh mục và sản phẩm của vendor (trống nếu chưa đăng sản phẩm).
+1. Mở `https://ten-mien-cua-ban/shop/vendor01` — trang gian hàng hiện danh mục và sản phẩm của vendor (trống nếu chưa đăng sản phẩm).
 2. Đăng nhập `/vendor_admin`, tạo một sản phẩm; nếu sàn tắt tự duyệt, vào admin S-Cart → Sản phẩm để duyệt.
 3. Mua sản phẩm của hai vendor khác nhau trong một giỏ và thanh toán — phải ra **hai đơn hàng**, mỗi đơn thuộc một gian hàng.
 4. Kiểm tra sức khỏe hệ thống:
@@ -128,7 +128,7 @@ hoặc xoá các tài khoản này trước khi đưa site lên chạy thật.
 Thêm vào `.env` nếu muốn đổi đường dẫn mặc định, rồi chạy `php artisan gp247:cache-rebuild`:
 
 ```env
-MULTIVENDOR_FRONT_PATH=vendor
+MULTIVENDOR_FRONT_PATH=shop
 MULTIVENDOR_ADMIN_PATH=vendor_admin
 PREFIX_QUICK_ORDER_VENDOR=quick-order
 PREFIX_CATEGORY_VENDOR=category-vendor
@@ -136,14 +136,15 @@ PREFIX_CATEGORY_VENDOR=category-vendor
 
 | Biến | Đổi đường dẫn nào | Mặc định |
 | --- | --- | --- |
-| `MULTIVENDOR_FRONT_PATH` | Danh bạ gian hàng và trang gian hàng khách xem: `/vendor`, `/vendor/{mã}` | `vendor` |
+| `MULTIVENDOR_FRONT_PATH` | Danh bạ gian hàng và trang gian hàng khách xem: `/shop`, `/shop/{mã}` | `shop` |
 | `MULTIVENDOR_ADMIN_PATH` | Khu quản trị của người bán: `/vendor_admin`, kể cả trang đăng nhập và đăng ký | `vendor_admin` |
-| `PREFIX_QUICK_ORDER_VENDOR` | Đoạn cuối của trang đặt hàng nhanh: `/vendor/{mã}/quick-order` | `quick-order` |
+| `PREFIX_QUICK_ORDER_VENDOR` | Đoạn cuối của trang đặt hàng nhanh: `/shop/{mã}/quick-order` | `quick-order` |
 | `PREFIX_CATEGORY_VENDOR` | Trang danh mục riêng của gian hàng | `category-vendor` |
 
-Ba lưu ý trước khi đổi:
+Bốn lưu ý trước khi đổi:
 
 - **Không đặt trùng** với đường dẫn đang có: tiền tố admin (mặc định `gp247_admin`), các biến còn lại trong bảng, hoặc đường dẫn trang/sản phẩm của storefront. Trùng thì một trong hai trang sẽ không mở được.
+- **Tuyệt đối không dùng tên đang là thư mục trong `public/`** — hiện là `vendor`, `storage` và `GP247`. Thư mục thật do web server tự trả, request không bao giờ vào tới S-Cart, nên trang báo **403 Forbidden** (hoặc trắng) bất kể route viết thế nào. Đây chính là lý do đường dẫn gian hàng là `shop` **chứ không phải** `vendor`: `public/vendor/` là nơi chứa asset của trình quản lý file. Triệu chứng rất dễ đọc sai — trang gian hàng `/{đường-dẫn}/{mã}` vẫn chạy bình thường, chỉ trang danh bạ `/{đường-dẫn}` chết, và khi bật tiền tố ngôn ngữ SEO thì lỗi bị che luôn (`/en/vendor` không trùng).
 - **Đường dẫn cũ sẽ báo 404.** Site đã chạy thật và đã được Google lập chỉ mục thì nên tạo chuyển hướng 301 từ đường cũ sang đường mới trước khi đổi.
 - Viết **không có dấu `/`** ở đầu và cuối. Trên hosting không dùng được dòng lệnh, sau khi sửa `.env` hãy xoá file `bootstrap/cache/config.php` (nếu có) thay cho lệnh `gp247:cache-rebuild`.
 
@@ -152,7 +153,7 @@ Muốn đổi chữ hiển thị, nội dung email, giao diện trang gian hàng
 ## Điều kiện & ràng buộc (hiểu trước khi thao tác)
 - **Plugin từ chối cài nếu website đã cài MultiStore** — hai plugin dùng chung cơ chế cửa hàng theo hai mô hình khác nhau; gỡ MultiStore trước.
 - **Cần `gp247/shop` đã cài** — plugin dựa vào sản phẩm, giỏ hàng, đơn hàng của shop.
-- **Mã gian hàng là duy nhất, tối đa 20 ký tự** — mã trở thành đường dẫn `/vendor/{code}`.
+- **Mã gian hàng là duy nhất, tối đa 20 ký tự** — mã trở thành đường dẫn `/shop/{code}`.
 - **Gỡ plugin sẽ xóa tài khoản vendor, danh mục gian hàng và sổ trả tiền vendor** (sản phẩm, đơn hàng của S-Cart giữ nguyên) — xuất dữ liệu cần giữ trước khi gỡ.
 
 ## Xử lý sự cố
@@ -177,9 +178,9 @@ Muốn đổi chữ hiển thị, nội dung email, giao diện trang gian hàng
 
 → Vendor: `/vendor_admin`. Admin sàn: khu admin S-Cart như bình thường.
 
-**Câu 4: Đổi đường dẫn `/vendor` thành tên khác được không?**
+**Câu 4: Đổi đường dẫn `/shop` thành tên khác được không?**
 
-→ Được, đặt `MULTIVENDOR_FRONT_PATH` trong `.env` rồi chạy `php artisan gp247:cache-rebuild`.
+→ Được, đặt `MULTIVENDOR_FRONT_PATH` trong `.env` rồi chạy `php artisan gp247:cache-rebuild`. Chọn tên **không** phải thư mục trong `public/` (nên tránh `vendor`, `storage`, `GP247`) — xem bốn lưu ý ở trên.
 
 **Câu 5: Dữ liệu mẫu có xóa được không?**
 

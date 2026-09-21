@@ -98,7 +98,7 @@ if (!function_exists('gp247_vendor_get_url')) {
             return null;
         }
         // WHY: single-domain marketplace only — a vendor store is always reached
-        // through the marketplace path /vendor/{code}, never its own domain.
+        // through the marketplace path /shop/{code}, never its own domain.
         return gp247_route_front('MultiVendor.detail', ['code' => $store->code]);
     }
 }

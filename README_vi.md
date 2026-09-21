@@ -21,7 +21,7 @@ Tính năng ghi **Pro** cần cài thêm `MultiVendorPro` bên cạnh bản mi�
 
 | Tính năng | Nội dung | Bản |
 | --- | --- | --- |
-| Danh bạ và trang gian hàng | `/vendor` liệt kê mọi gian hàng; mỗi gian hàng có trang riêng tại `/vendor/{mã}` với ảnh bìa, logo, banner, danh mục riêng và ba tab Sản phẩm · Đánh giá · Thông tin | Free |
+| Danh bạ và trang gian hàng | `/shop` liệt kê mọi gian hàng; mỗi gian hàng có trang riêng tại `/shop/{mã}` với ảnh bìa, logo, banner, danh mục riêng và ba tab Sản phẩm · Đánh giá · Thông tin | Free |
 | Nhãn người bán trên sản phẩm | Thẻ sản phẩm hiện tên và biểu tượng của gian hàng bán nó | Free |
 | Giỏ hàng tách theo gian hàng | Khách mua hàng nhiều gian hàng trong một lần thanh toán; hệ thống tạo mỗi gian hàng một đơn riêng | Free |
 | Chỉ số tin cậy công khai | Tỷ lệ khiếu nại, thời gian chuẩn bị hàng, tỷ lệ trả lời khiếu nại và đánh giá; tính trên 90 ngày, ẩn khi gian hàng chưa đủ đơn | Free |
@@ -62,7 +62,7 @@ Hai plugin cùng nói về "nhiều cửa hàng" nhưng là **hai mô hình kinh
 |---|---|---|
 | Ai sở hữu hàng hoá | **Nhiều người bán** độc lập cùng bán trên sàn của bạn | **Một chủ** — chính doanh nghiệp của bạn |
 | Mô hình | Sàn thương mại điện tử (marketplace) | Chuỗi cửa hàng / nhiều thương hiệu của cùng một chủ |
-| Tên miền | **Một domain duy nhất**; mỗi gian hàng là một trang `/vendor/{mã}` | **Mỗi cửa hàng một tên miền** riêng |
+| Tên miền | **Một domain duy nhất**; mỗi gian hàng là một trang `/shop/{mã}` | **Mỗi cửa hàng một tên miền** riêng |
 | Ai đăng sản phẩm | Từng người bán tự đăng, sàn duyệt | Bạn đăng, chọn sản phẩm thuộc cửa hàng nào |
 | Dòng tiền | Sàn thu tiền khách, **giữ hoa hồng**, chi trả lại người bán theo kỳ | Tiền về thẳng doanh nghiệp bạn, không chia cho ai |
 | Ai đăng nhập quản trị | Người bán vào khu riêng `/vendor_admin`, chỉ thấy gian hàng mình | Bạn (và quản trị viên từng cửa hàng ở bản Pro) |
@@ -116,7 +116,7 @@ Free là một sàn chạy thật cho tối đa 3 vendor. Pro là plugin thứ h
 
 **Câu 2: Vendor có website hay tên miền của mình không?**
 
-→ Không. Mọi gian hàng nằm trên domain của sàn, truy cập theo đường dẫn `/vendor/{mã-gian-hàng}`.
+→ Không. Mọi gian hàng nằm trên domain của sàn, truy cập theo đường dẫn `/shop/{mã-gian-hàng}`.
 
 **Câu 3: Ai thu tiền của khách?**
 
@@ -136,4 +136,4 @@ Free là một sàn chạy thật cho tối đa 3 vendor. Pro là plugin thứ h
 
 ---
 
-<sub>📅 **Cập nhật lần cuối:** 2026-09-20 · ✍️ **Tác giả (Author):** GP247</sub>
+<sub>📅 **Cập nhật lần cuối:** 2026-09-21 · ✍️ **Tác giả (Author):** GP247</sub>

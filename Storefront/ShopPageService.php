@@ -173,7 +173,7 @@ final class ShopPageService
 
     /**
      * Open vendor stores (never the marketplace ROOT), optionally filtered by
-     * name in the current locale. Paginated for the /vendor directory.
+     * name in the current locale. Paginated for the marketplace directory.
      *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */

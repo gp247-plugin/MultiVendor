@@ -6,7 +6,7 @@
 This document describes **exactly what the MultiVendor plugin does today**: the marketplace operating model, features for each role (customer, vendor, marketplace owner), marketplace settings, the vendor payout process, and the rules to know before acting. It is for marketplace owners and operators; after reading you know how the marketplace runs and what to configure before opening it to vendors. Installation is covered separately in the [Installation guide](./how_to_setup.md).
 
 ## Operating model: one marketplace, one domain
-1. **One storefront for every vendor.** Products of all vendors appear on the marketplace website. Each vendor has a store page at `/vendor/{code}` (`code` is the store code set at creation), showing the store's product list and its own categories.
+1. **One storefront for every vendor.** Products of all vendors appear on the marketplace website. Each vendor has a store page at `/shop/{code}` (`code` is the store code set at creation), showing the store's product list and its own categories.
 2. **Cart grouped by store.** A shopper adds products from several vendors to one cart; at checkout the system splits it into **one order per vendor** (each order carries that vendor's `store_id`).
 3. **The marketplace collects payment.** Only the owner configures payment gateways. Vendors never enter payment keys and never collect money themselves.
 4. **The marketplace pays vendors by commission.** Periodically the owner runs "process payouts": the system gathers each vendor's **completed** orders, keeps the commission rate and records the amount owed (see Vendor payout process).
@@ -15,9 +15,9 @@ This document describes **exactly what the MultiVendor plugin does today**: the 
 Key paths (defaults, changeable in `.env` — see the Installation guide):
 | Role | Path |
 | --- | --- |
-| Store directory (search by name, product count, rating) | `/vendor` |
-| Store page (customers) | `/vendor/{code}` — header (cover, logo, name, product count, rating, member since, contact) + tabs **Products** / **Reviews** / **About** (`?tab=`) |
-| Bulk quick order per store | `/vendor/{code}/quick-order` (when "Quick order" is enabled) |
+| Store directory (search by name, product count, rating) | `/shop` |
+| Store page (customers) | `/shop/{code}` — header (cover, logo, name, product count, rating, member since, contact) + tabs **Products** / **Reviews** / **About** (`?tab=`) |
+| Bulk quick order per store | `/shop/{code}/quick-order` (when "Quick order" is enabled) |
 | Vendor admin area | `/vendor_admin` |
 | Marketplace admin (root) | the S-Cart admin area, menu **Marketplace** — Vendor store · Vendor user · Quick Configuration · Payment, plus the Pro screens Reports · Commission report · Approval queue · Complaints · Shop plans |
 
@@ -92,7 +92,7 @@ sequenceDiagram
 ## Features by role
 
 ### Customers
-- Browse and buy products of every vendor on one website; a **store directory** at `/vendor`; every store has its own **Shopee-style page**: brand header, the store's banners, a **Products** tab (in-store search, category filter, sort), a **Reviews** tab (reviews of everything that store sells — needs the *Product Rating & Review* plugin enabled for the store) and an **About** tab.
+- Browse and buy products of every vendor on one website; a **store directory** at `/shop`; every store has its own **Shopee-style page**: brand header, the store's banners, a **Products** tab (in-store search, category filter, sort), a **Reviews** tab (reviews of everything that store sells — needs the *Product Rating & Review* plugin enabled for the store) and an **About** tab.
 - Cart, wishlist, compare, order history — the full S-Cart customer feature set.
 - **B2B quick order** for one store (Pro, when enabled): search by SKU/name or store category, enter quantities for many products at once, **paste a "SKU, quantity" list**, **re-order from your previous orders** at this store (when signed in), **export a quote (Excel)**; every line is checked (minimum quantity, stock per the store's settings, right store, on sale) before anything is added to the cart.
 
@@ -203,8 +203,8 @@ The template file wins; the plugin's own file is used only when it does not exis
 
 | View | Page |
 | --- | --- |
-| `vendor_index` | The store directory `/vendor` |
-| `vendor_home` | A store page `/vendor/{code}` |
+| `vendor_index` | The store directory `/shop` |
+| `vendor_home` | A store page `/shop/{code}` |
 | `vendor_info` | The store's **Information** tab |
 | `vendor_product_list` | The product grid inside a store page |
 | `hooks.order_dispute_box` | The dispute box under the customer's order page (Pro) |
@@ -216,7 +216,7 @@ The Marketplace screens sit in S-Cart's own permission system: **User permission
 - **Never edit files inside the plugin folder.** Anything changed in `app/GP247/Plugins/MultiVendor/` is lost on update. Use the three supported routes: language rows (above), template views (above), and the extension points below.
 - **Customer order page hook**: the plugin registers its dispute box in `gp247-config.front.plugin_hooks` at `shop_order_detail_bottom`. Other plugins use the same mechanism to add their own content without editing the template.
 - **Product price**: per-store dealer pricing (Pro) plugs into the `gp247-config.shop.price_resolvers` seam of `gp247/shop`, so the cart, the checkout, quick order and the quote sheet all agree on one price. Another pricing plugin registers a resolver the same way.
-- **Store URLs in code**: use the plugin's helper instead of building `/vendor/...` by hand, so an `.env` change moves every link with it.
+- **Store URLs in code**: use the plugin's helper instead of building `/shop/...` by hand, so an `.env` change moves every link with it.
 - **Updating safely**: the plugin converges on every entry point — fresh install, reinstall and update (menu, language rows, tables) — and repairs its menu block when the Quick configuration screen is opened. After replacing files by hand, run `php artisan gp247:cache-rebuild` and open **Quick configuration** once.
 
 ## Vendor payout process
@@ -233,7 +233,7 @@ Example: commission 10%, vendor A has 3 completed orders totalling 5,000,000 VND
 - **MultiVendor (and MultiVendorPro) cannot be installed while MultiStore / MultiStorePro is installed** — two different business models share the store table with different meanings; the installer stops at once and writes nothing. Uninstall the multi-store plugin first (MultiStore refuses the other way round as well).
 
 **When creating a vendor / store**
-- **The store code is unique, at most 20 characters** — it becomes the path `/vendor/{code}`; a duplicate would be ambiguous.
+- **The store code is unique, at most 20 characters** — it becomes the path `/shop/{code}`; a duplicate would be ambiguous.
 - **Each vendor account belongs to exactly one store** — permissions and data (orders, products) are scoped to that store.
 - **A locked vendor account or a closed store cannot enter the vendor area** — the system redirects to an "account inactive" page; the admin must reopen it.
 
@@ -335,7 +335,7 @@ Example: commission 10%, vendor A has 3 completed orders totalling 5,000,000 VND
 
 **Q8: Do vendors get a standalone website on a domain name of their own?**
 
-→ No. The only model is the shared marketplace on one domain; stores live at `/vendor/{code}`.
+→ No. The only model is the shared marketplace on one domain; stores live at `/shop/{code}`.
 
 **Q9: Is there sample data to try after installing?**
 
