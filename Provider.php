@@ -56,6 +56,20 @@
         ];
         config(['gp247-config.front.plugin_hooks' => $hooks]);
 
+        // The "Top new vendors" storefront block, offered to the Layout block screen
+        // by REGISTERING it (ADR frontend-template-dev_plugin-layout-block-views).
+        //
+        // Until modification 20260922T205500 install() copied the blade into
+        // app/GP247/Templates/<active template>/blocks/. That copy needed a writable
+        // directory (a read-only deploy silently ended up with no block at all), only
+        // ever reached the template active at install time, was never refreshed by an
+        // update, and stayed behind as an orphan file when the plugin was removed.
+        // A template that wants to draw the block itself still wins: gp247_render_block()
+        // looks its file up first.
+        $blockViews = config('gp247-config.front.layout_block_views', []);
+        $blockViews['vendor_new'] = $extensionPath.'::blocks.vendor_new';
+        config(['gp247-config.front.layout_block_views' => $blockViews]);
+
 
         //Config for file manager
         $configLfm = config('lfm.folder_categories');

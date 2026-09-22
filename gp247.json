@@ -7,7 +7,7 @@
     "configGroup": "Plugins",
     "configCode": "Business",
     "configKey": "MultiVendor",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "requireCore": ["3.0"],
     "requireUpdateFrom": "1.0",
     "requireComposerPackages": ["gp247/shop"],

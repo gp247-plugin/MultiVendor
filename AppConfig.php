@@ -6,7 +6,6 @@ use GP247\Core\Models\AdminConfig;
 use GP247\Core\Models\AdminHome;
 use GP247\Core\Models\AdminMenu;
 use GP247\Core\Models\Languages;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use GP247\Core\ExtensionConfigDefault;
 use App\GP247\Plugins\MultiVendor\Notifications\VendorNotifier;
@@ -359,22 +358,14 @@ class AppConfig extends ExtensionConfigDefault
                     } else {
                         (new ExtensionModel)->installExtension();
                     }
-                    if (is_writable(base_path('app/GP247/Templates/'.gp247_store_info('template')))) {
-                        
-                        if(!File::isDirectory(base_path('app/GP247/Templates/'.gp247_store_info('template').'/blocks'))){
-                            File::makeDirectory(base_path('app/GP247/Templates/'.gp247_store_info('template').'/blocks'));
-                        }
-                        foreach (glob(app_path('GP247/Plugins/'.$this->configKey.'/template/blocks/*.blade.php')) as $filename) {
-                            $checkFile = str_replace(
-                                app_path('GP247/Plugins/'.$this->configKey.'/template'),
-                                app_path('GP247/Templates/'.gp247_store_info('template')),
-                                $filename
-                            );
-                            if (!file_exists($checkFile)) {
-                                File::copy($filename, $checkFile);
-                            }
-                        }
-                    }
+                    // The "Top new vendors" block used to be copied into
+                    // app/GP247/Templates/<active template>/blocks here. It is now
+                    // registered instead (Provider.php ->
+                    // gp247-config.front.layout_block_views), so there is nothing to
+                    // copy: the block reaches every template, works on a read-only
+                    // deploy, and leaves no orphan file behind when the plugin goes.
+                    // Modification 20260922T205500, ADR
+                    // frontend-template-dev_plugin-layout-block-views.
                     // Same convergence list update() runs. A fresh install and a
                     // reinstall must end in the same place; see converge().
                     self::converge();
