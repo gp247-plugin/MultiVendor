@@ -5,6 +5,11 @@
 ## Giới thiệu
 Trang này ghi các phiên bản của plugin MultiVendor và những thay đổi đáng chú ý trong mỗi bản, để chủ sàn biết mình đang dùng bản nào và nâng cấp thì được gì. Tính năng chi tiết xem [tài liệu Tổng quan sàn](https://gp247.net/vi/docs/plugin-multi-vendor/multi-vendor-overview.html) trên gp247.net.
 
+## Phiên bản 1.0.3
+- **Khối "Nhà cung cấp mới nhất" được làm lại cho khớp giao diện trang chủ.** Tiêu đề và lề nay thẳng hàng với các khối khác, có liên kết **Xem tất cả** tới danh bạ gian hàng; mỗi gian hàng là một thẻ gồm logo (hiện trọn, không bị cắt), tên thật của gian hàng và ngày tham gia. Liên kết tới gian hàng trước đây bị hỏng (luôn rỗng) — nay mở đúng trang `/shop/{mã}`.
+- **Cài plugin là khối tự có mặt trên trang chủ.** Bản cài đặt đặt khối ở vị trí **Top**, ngay dưới banner của trang chủ sàn. Chỉ đặt một lần: nếu bạn đã xoá hoặc di chuyển khối, cập nhật plugin sẽ không đặt lại.
+- **Gỡ plugin là khối gỡ theo.** Mọi vị trí đặt khối này ở màn **Layout block** được xoá cùng plugin; các khối khác không bị động tới. Khi plugin đang **tắt**, khối không hiện trên trang chủ và cũng không có trong ô chọn.
+
 ## Phiên bản 1.0.2
 - **Khối "Nhà cung cấp mới nhất" trên trang chủ chạy với mọi giao diện.** Trước đây bản cài chép tệp khối vào thư mục giao diện đang dùng, nên nó chỉ có mặt ở giao diện tại thời điểm cài: đổi sang giao diện khác (hoặc thêm cửa hàng mới) là khối biến mất, và trên máy chủ **chỉ cho đọc** thì bước chép bị bỏ qua lặng lẽ — bạn không thấy khối mà cũng không thấy lỗi. Nay plugin **đăng ký** khối với hệ thống, nên khối luôn có trong ô chọn của màn **Layout block** với bất kỳ giao diện nào. Cập nhật lên bản này **không đổi gì** trên site đang chạy: tệp đã chép trước đây vẫn được ưu tiên dùng, kể cả khi bạn đã sửa nó.
 - **Gỡ plugin không để lại tệp thừa.** Trước đây tệp khối đã chép vào thư mục giao diện vẫn nằm lại sau khi gỡ. Muốn dọn tệp cũ trên site đang chạy, xoá `app/GP247/Templates/{TÊN_GIAO_DIỆN}/blocks/vendor_new.blade.php` — trừ khi bạn đã sửa tệp đó và muốn giữ bản của mình.

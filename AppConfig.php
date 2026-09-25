@@ -27,6 +27,9 @@ class AppConfig extends ExtensionConfigDefault
      */
     public const SEED_EVENT = 'multi_vendor.seed';
 
+    /** Storefront block name, as stored in front_layout_block.text (Provider.php registers its view). */
+    public const BLOCK_NAME = 'vendor_new';
+
     public function __construct()
     {
         //Read config from config.json
@@ -369,6 +372,7 @@ class AppConfig extends ExtensionConfigDefault
                     // Same convergence list update() runs. A fresh install and a
                     // reinstall must end in the same place; see converge().
                     self::converge();
+                    self::seedLayoutBlock();
                 }
                 $return = ['error' => 0, 'msg' => gp247_language_render('admin.extension.install_success')];
             } catch(\Throwable $e) {
@@ -1084,6 +1088,80 @@ class AppConfig extends ExtensionConfigDefault
      *
      * @return void
      */
+    /**
+     * Put the "Top new vendors" block on the marketplace home page (root store,
+     * position top, under the banner) — once, at install time.
+     *
+     * WHY at install and NOT in converge(): a layout block is site content. An
+     * owner who removed or moved the block has made a decision, and an update must
+     * not quietly put it back. Guarded on any existing `vendor_new` row of the
+     * root store, so a reinstall over a kept placement adds nothing.
+     *
+     * WHY the root store only: this is a single-domain marketplace, the root store
+     * owns the home page; vendor stores are shops inside it, not storefronts.
+     *
+     * WHY the template column: FrontLayoutBlock::getLayout() filters by store AND
+     * template, so the row must carry the root store's template to render.
+     *
+     * @return void
+     */
+    public static function seedLayoutBlock(): void
+    {
+        if (!class_exists(\GP247\Front\Models\FrontLayoutBlock::class)) {
+            return; // storefront package absent: nothing renders blocks
+        }
+
+        $store = \GP247\Core\Models\AdminStore::find(GP247_STORE_ID_ROOT);
+        $template = (string) ($store->template ?? '');
+        if (preg_match('/^[A-Za-z0-9_-]+$/', $template) !== 1) {
+            return; // the name becomes a path segment in the view key
+        }
+
+        $taken = \GP247\Front\Models\FrontLayoutBlock::where('store_id', GP247_STORE_ID_ROOT)
+            ->where('type', 'view')
+            ->where('text', self::BLOCK_NAME)
+            ->exists();
+        if ($taken) {
+            return;
+        }
+
+        \GP247\Front\Models\FrontLayoutBlock::insert([
+            'id'       => (string) \Illuminate\Support\Str::orderedUuid(),
+            'name'     => 'Top new vendors (MultiVendor)',
+            'position' => 'top',
+            'page'     => 'front_home',
+            'text'     => self::BLOCK_NAME,
+            'type'     => 'view',
+            // Blocks at a position render by descending sort; the template's
+            // banner seeds at 10, so 0 places the vendors right below it.
+            'sort'     => 0,
+            'status'   => 1,
+            'template' => $template,
+            'store_id' => GP247_STORE_ID_ROOT,
+        ]);
+    }
+
+    /**
+     * Remove every placement of the "Top new vendors" block, in every store.
+     *
+     * WHY every placement, including ones the owner added by hand: the view is
+     * this plugin's, so without it the row can only render nothing and would sit
+     * in the Layout block list pointing at a block that no longer exists.
+     * Scoped to type `view` + this block name — nothing else is touched.
+     *
+     * @return void
+     */
+    public static function removeLayoutBlock(): void
+    {
+        if (!class_exists(\GP247\Front\Models\FrontLayoutBlock::class)) {
+            return;
+        }
+
+        \GP247\Front\Models\FrontLayoutBlock::where('type', 'view')
+            ->where('text', self::BLOCK_NAME)
+            ->delete();
+    }
+
     public static function removeMenuBlock(): void
     {
         $block = AdminMenu::where('key', 'ADMIN_MVENDOR_SETTING')->first();
@@ -1256,6 +1334,9 @@ class AppConfig extends ExtensionConfigDefault
 
             //Delete menu
             self::removeMenuBlock();
+
+            //Storefront block placements
+            self::removeLayoutBlock();
 
             //Language
             Languages::where('position', 'multi_vendor')->delete();
