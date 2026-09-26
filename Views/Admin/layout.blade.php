@@ -36,6 +36,7 @@
     <link rel="stylesheet" href="{{ gp247_file('GP247/Core/AdminShell/vendor/fontawesome-free/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ gp247_file('GP247/Core/AdminShell/css/admin.css') }}">
     <link rel="stylesheet" href="{{ gp247_file('GP247/Plugins/MultiVendor/css/admin.css') }}">
+    <link rel="stylesheet" href="{{ gp247_file('GP247/Plugins/MultiVendor/css/vendor-theme.css') }}">
     @include($templatePathAdminVendor.'component.css')
 
     {{-- admin.js registers its `alpine:init` listener, so it must load before

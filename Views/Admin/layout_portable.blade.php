@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="{{ gp247_file('GP247/Core/AdminShell/vendor/fontawesome-free/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ gp247_file('GP247/Core/AdminShell/css/admin.css') }}">
     <link rel="stylesheet" href="{{ gp247_file('GP247/Plugins/MultiVendor/css/admin.css') }}">
+    <link rel="stylesheet" href="{{ gp247_file('GP247/Plugins/MultiVendor/css/vendor-theme.css') }}">
 
     <script src="{{ gp247_file('GP247/Core/AdminShell/js/admin.js') }}"></script>
     @livewireStyles
@@ -42,6 +43,7 @@
                 <img src="{{ gp247_file(gp247_store_info('logo')) }}" alt="logo" class="max-h-16 w-auto max-w-[200px]">
             </a>
 
+            <div class="mb-2 text-center"><span class="mvp-badge" data-testid="multi-vendor-admin-badge">Vendor</span></div>
             <h2 class="mb-6 text-center text-lg font-semibold uppercase tracking-wide text-gray-800 dark:text-gray-100">
                 {{ $title ?? '' }}
             </h2>

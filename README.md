@@ -114,6 +114,25 @@ Free is a working marketplace for up to 3 vendors. Pro is a second plugin instal
 - **Not** installed together with the MultiStore plugin (the two models are mutually exclusive).
 - Runs on ordinary shared hosting: no cron, no queue worker, no websocket needed.
 
+## Install from the command line (CLI, gp247 3.x)
+Since gp247 3.x you can download **MultiVendor** from the GP247 library and install it straight from the command line, without opening the admin. Open a terminal in the website's root folder and run:
+
+```bash
+# 1) Once per website: register the (free) API License that connects the site to the GP247 library
+php artisan gp247:ext-register-license
+
+# 2) Download the plugin from the library and install it
+php artisan gp247:ext-install --type=plugin --key=MultiVendor
+```
+
+- Before step 1, make sure `APP_URL` in `.env` is the website's **real domain** (not `http://localhost`) — the license is bound to that domain.
+- Once installed, the plugin is **enabled** and caches are refreshed automatically; nothing else is needed in the admin.
+- The command checks the requirements declared in `gp247.json` (core 3.0, `gp247/shop`, required plugins, the rule against installing alongside MultiStore) and stops with a clear message if something is missing.
+- If the plugin folder is already in `app/GP247/Plugins/` (copied manually or unpacked from the zip), the command **installs it in place** instead of downloading it again.
+- The command refuses a plugin that is already installed. To move to a newer version, run `php artisan gp247:ext-update --type=plugin --key=MultiVendor`.
+- Append `--json` to get machine-readable output (for scripts/CI).
+- More: [Extension installation guide](https://gp247.net/en/docs/user-guide-extension/guide-to-installing-the-extension.html).
+
 ## Q&A
 **Q1: How is MultiVendor different from Multi-Store?**
 
@@ -141,4 +160,4 @@ Free is a working marketplace for up to 3 vendors. Pro is a second plugin instal
 
 ---
 
-<sub>📅 **Last updated:** 2026-09-21 · ✍️ **Author:** GP247</sub>
+<sub>📅 **Last updated:** 2026-09-25 · ✍️ **Author:** GP247</sub>

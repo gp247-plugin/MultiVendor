@@ -1,0 +1,47 @@
+/*
+ * Vendor admin identity: an orange strip across the top of every vendor screen
+ * and a "VENDOR" badge, so a vendor page is never mistaken for the staff admin.
+ *
+ * WHY plain CSS in its own file: css/admin.css is a Tailwind build output and is
+ * regenerated from resources/assets; this file is not, so a rebuild never wipes
+ * it and no build tool is needed to change it.
+ *
+ * WHY every rule is scoped to .mvp-body: only the vendor layouts (layout.blade.php
+ * and layout_portable.blade.php) put that class on <body>, and only they load this
+ * file — the staff admin is untouched.
+ */
+.mvp-body {
+    --mvp-accent: #f97316;
+    --mvp-accent-strong: #ea580c;
+}
+
+/* Fixed, not a border on <body>: the layout is full-height flex, a border would
+   push it 4px past the viewport; pointer-events keep the header clickable. */
+.mvp-body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--mvp-accent-strong), var(--mvp-accent));
+    z-index: 60;
+    pointer-events: none;
+}
+
+.mvp-body .mvp-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    background-color: var(--mvp-accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.dark .mvp-body .mvp-badge {
+    background-color: var(--mvp-accent-strong);
+}

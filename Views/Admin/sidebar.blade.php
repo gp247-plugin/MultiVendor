@@ -37,10 +37,8 @@
 >
     <a href="{{ gp247_route_admin('vendor_admin.home') }}"
         class="flex h-16 shrink-0 flex-col items-center justify-center border-b border-gray-200 px-5 dark:border-gray-700">
-        <span class="text-sm font-semibold text-gray-700 dark:text-gray-200">
-            Vendor
-        </span>
-        <span class="text-xs font-light text-gray-500 dark:text-gray-400">Admin</span>
+        <span class="mvp-badge" data-testid="multi-vendor-admin-badge">Vendor</span>
+        <span class="mt-1 text-xs font-light text-gray-500 dark:text-gray-400">Admin</span>
     </a>
 
     <nav class="flex-1 space-y-4 overflow-y-auto px-3 py-4">

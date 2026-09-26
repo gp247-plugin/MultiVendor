@@ -5,6 +5,10 @@
 ## Giới thiệu
 Trang này ghi các phiên bản của plugin MultiVendor và những thay đổi đáng chú ý trong mỗi bản, để chủ sàn biết mình đang dùng bản nào và nâng cấp thì được gì. Tính năng chi tiết xem [tài liệu Tổng quan sàn](https://gp247.net/vi/docs/plugin-multi-vendor/multi-vendor-overview.html) trên gp247.net.
 
+## Phiên bản 1.0.4
+- **Khu vendor admin phân biệt rõ với trang quản trị của sàn.** Mọi màn của vendor — cả màn đăng nhập, đăng ký, quên mật khẩu — có một dải màu cam ở mép trên và nhãn **VENDOR** (ở đầu thanh menu bên trái và phía trên tiêu đề màn đăng nhập), nên người dùng không nhầm mình đang ở trang quản trị nào. Trang quản trị của sàn không thay đổi. Kiểu dáng nằm trong tệp CSS riêng `public/css/vendor-theme.css` — muốn đổi màu chỉ cần sửa tệp này, không cần công cụ build.
+- **README có thêm hướng dẫn cài bằng dòng lệnh** (gp247 3.x): đăng ký license kết nối thư viện rồi `php artisan gp247:ext-install --type=plugin --key=MultiVendor`.
+
 ## Phiên bản 1.0.3
 - **Khối "Nhà cung cấp mới nhất" được làm lại cho khớp giao diện trang chủ.** Tiêu đề và lề nay thẳng hàng với các khối khác, có liên kết **Xem tất cả** tới danh bạ gian hàng; mỗi gian hàng là một thẻ gồm logo (hiện trọn, không bị cắt), tên thật của gian hàng và ngày tham gia. Liên kết tới gian hàng trước đây bị hỏng (luôn rỗng) — nay mở đúng trang `/shop/{mã}`.
 - **Cài plugin là khối tự có mặt trên trang chủ.** Bản cài đặt đặt khối ở vị trí **Top**, ngay dưới banner của trang chủ sàn. Chỉ đặt một lần: nếu bạn đã xoá hoặc di chuyển khối, cập nhật plugin sẽ không đặt lại.
