@@ -1047,6 +1047,9 @@ class AppConfig extends ExtensionConfigDefault
      */
     public static function converge(): void
     {
+        // Put back any missing piece of the plugin schema (e.g. finish_date after
+        // the shop tables were rebuilt) — re-entrant, so install and update share it.
+        (new ExtensionModel)->installExtension();
         self::ensureProMenus();
         self::seedProFunnelLanguage();
         self::seedTrustSignalLanguage();

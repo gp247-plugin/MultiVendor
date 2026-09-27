@@ -32,12 +32,23 @@ class ExtensionModel
         }
     }
 
+    /**
+     * Create whatever part of the plugin schema is missing — safe to run again.
+     *
+     * WHY re-entrant: the shop tables can be rebuilt under an installed plugin (a
+     * store reinstall), which brings the order table back without finish_date and
+     * breaks every order reaching "Done". converge() (install AND update) calls
+     * this, so an update repairs such a site.
+     */
     public function installExtension()
     {
-        (new VendorCategory)->install();
-        (new VendorProductCategory)->install();
+        $schema = Schema::connection(GP247_DB_CONNECTION);
+        foreach ([new VendorCategory, new VendorProductCategory, new AdminMoneyProcess] as $model) {
+            if (!$schema->hasTable($model->getTable())) {
+                $model->install();
+            }
+        }
         (new VendorUser)->install();
-        (new AdminMoneyProcess)->install();
         (new VendorOrderShipment)->install(); // re-entrant (S1-3)
         (new VendorReviewLog)->install(); // re-entrant (S1-4)
         if (!Schema::hasColumn(GP247_DB_PREFIX.'shop_order', 'finish_date'))
