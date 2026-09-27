@@ -5,6 +5,14 @@
 ## Giới thiệu
 Trang này ghi các phiên bản của plugin MultiVendor và những thay đổi đáng chú ý trong mỗi bản, để chủ sàn biết mình đang dùng bản nào và nâng cấp thì được gì. Tính năng chi tiết xem [tài liệu Tổng quan sàn](https://gp247.net/vi/docs/plugin-multi-vendor/multi-vendor-overview.html) trên gp247.net.
 
+## Phiên bản 1.0.7
+- **Sổ chi trả chỉ gồm tiền của vendor.** Trước đây kỳ chi trả gom cả đơn của chính sàn (gian hàng gốc), nên mỗi kỳ có một dòng "trả cho sàn" và con số "doanh số đã hoàn tất" trên màn **Thanh toán cho vendor** bị cộng cả doanh thu của sàn. Nay đơn của gian hàng gốc không vào kỳ chi trả nào nữa. Các dòng cũ của gian hàng gốc (nếu có) vẫn nằm trong sổ — bạn có thể chuyển chúng sang **Đã huỷ** ở màn sửa dòng.
+- **Khách đánh giá được sản phẩm của vendor** (cần ProductRating 1.1.2): trước đây trên sàn, khách đã mua sản phẩm của một gian hàng vẫn bị báo "cần mua hàng".
+
+## Phiên bản 1.0.6
+- **Mọi ngày tháng của sàn dùng chung một đồng hồ.** Ngày hoàn tất đơn, ngày chạy kỳ chi trả, ngày chi và nhật ký duyệt nay lấy từ đồng hồ của ứng dụng (theo múi giờ cấu hình của site) thay vì đồng hồ riêng của PHP. Trên site đang chạy, hai đồng hồ này cho cùng kết quả nên bạn không thấy khác biệt; lợi ích là dữ liệu mẫu và bài kiểm thử có thể mô phỏng một ngày trong quá khứ.
+- **Chạy kỳ chi trả là một dịch vụ dùng lại được** (`Payout\PayoutRun`). Màn **Thanh toán cho vendor** vẫn hoạt động y như trước; lập trình viên muốn chạy kỳ chi trả từ lệnh hoặc tác vụ riêng thì gọi cùng một mã, không phải chép lại thuật toán.
+
 ## Phiên bản 1.0.5
 - **Vendor tạo và sửa sản phẩm được trở lại.** Ô **Danh mục**, **Thương hiệu**, **Thuế** và bộ lọc danh mục ở danh sách sản phẩm của vendor giờ liệt kê danh mục, thương hiệu, thuế của sàn — trước đó các ô này trống nên vendor không lưu được sản phẩm nào. Sản phẩm vẫn thuộc gian hàng của vendor; vendor không chọn được danh mục của gian hàng khác. Cần cập nhật `gp247/shop` cùng đợt.
 - **Chủ sàn duyệt và sửa được sản phẩm của vendor ở màn Sản phẩm của trang quản trị.** Trước đó màn này báo lỗi danh mục khi lưu sản phẩm của gian hàng vendor, nên ở bản miễn phí (không có hàng chờ duyệt) chủ sàn không duyệt được sản phẩm nào. Nay màn Sản phẩm của chủ sàn và màn của vendor dùng chung một quy tắc: sản phẩm của gian hàng xếp vào danh mục, thương hiệu, thuế của sàn.

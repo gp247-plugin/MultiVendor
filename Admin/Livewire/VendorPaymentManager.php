@@ -3,13 +3,9 @@
 namespace App\GP247\Plugins\MultiVendor\Admin\Livewire;
 
 use App\GP247\Plugins\MultiVendor\Admin\Models\AdminMoneyProcess;
-use App\GP247\Plugins\MultiVendor\Commission\CommissionPolicy;
-use App\GP247\Plugins\MultiVendor\Events\PaidVendor;
-use App\GP247\Plugins\MultiVendor\Events\PayingVendor;
-use App\GP247\Plugins\MultiVendor\Kyc\Kyc;
 use App\GP247\Plugins\MultiVendor\Payout\Payout;
+use App\GP247\Plugins\MultiVendor\Payout\PayoutRun;
 use GP247\Core\AdminShell\Infrastructure\GP247AdminComponent;
-use GP247\Shop\Models\ShopOrder;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
@@ -18,11 +14,10 @@ use Livewire\WithPagination;
  * Root-admin vendor payout manager (v2 Livewire port of
  * AdminRootVendorPaymentController: index + process + edit/postEdit + delete).
  *
- * Money-critical screen: the payout algorithm, the date validation and the
- * per-currency summary are ported verbatim from the controller so the amounts,
- * the commission split and the emitted PayingVendor/PaidVendor events stay
- * byte-for-byte identical. Only the transport changes (controller+blade ->
- * Livewire); no business rule is altered.
+ * Money-critical screen: the payout algorithm and the "paid" step live in
+ * Payout\PayoutRun (ported verbatim from the controller, then moved out of
+ * this component so a seeder or a test runs the same code); the screen keeps
+ * the authorization, the edit form and the per-currency summary.
  *
  * Layer-2 authorization (ADR-001): read is checked on mount(); process(), save()
  * and delete() re-check as mutations. $screenUri is pinned to the canonical
@@ -152,10 +147,8 @@ class VendorPaymentManager extends GP247AdminComponent
     /**
      * Run a payout for every store/currency with completed orders in the period.
      *
-     * Ported verbatim from AdminRootVendorPaymentController::process(): validate
-     * the processing date (must be before today and after the last processed
-     * date), aggregate finished orders (status 5) by store_id+currency, apply the
-     * commission split, insert the money-process rows and fire the payout events.
+     * The algorithm lives in PayoutRun::process() (shared with any other caller);
+     * this action only authorizes, reports a refusal and refreshes the list.
      *
      * @return void
      * @throws \GP247\Core\AdminShell\Domain\AuthorizationException When denied.
@@ -164,108 +157,16 @@ class VendorPaymentManager extends GP247AdminComponent
     {
         $this->authorizeAction('process');
 
-        $startProcess = $this->processDate;
-        if (!$startProcess) {
-            $this->notify('error', gp247_language_render('multi_vendor.vendor_payment_date_validate'));
+        $result = PayoutRun::process((string) $this->processDate);
+        if ($result['error'] !== null) {
+            $this->notify('error', gp247_language_render($result['error']));
 
             return;
         }
-        if ($startProcess >= date('Y-m-d')) {
-            $this->notify('error', gp247_language_render('multi_vendor.vendor_payment_date_validate'));
-
-            return;
-        }
-        $checkDateProcess = AdminMoneyProcess::selectRaw('max(date_process) as date_process')->first()->date_process;
-        if ($checkDateProcess) {
-            if ($startProcess <= $checkDateProcess) {
-                $this->notify('error', gp247_language_render('multi_vendor.vendor_payment_date_exist'));
-
-                return;
-            }
-        }
-        $dataPay = (new ShopOrder)
-            ->selectRaw('sum(total) as total_sum, count(*) as order_count, currency, store_id')
-            ->where('status', 5)
-            ->where('finish_date', '<=', $startProcess);
-        if ($checkDateProcess) {
-            $dataPay = $dataPay->where('finish_date', '>', $checkDateProcess);
-        }
-        // S3-1: the same order set, per order, so the period can record what it paid.
-        $ordersOfPeriod = (new ShopOrder)
-            ->select('id', 'store_id', 'currency', 'total')
-            ->where('status', 5)
-            ->where('finish_date', '<=', $startProcess)
-            ->when($checkDateProcess, fn ($q) => $q->where('finish_date', '>', $checkDateProcess))
-            ->get()
-            ->groupBy(fn ($o) => $o->store_id.'|'.$o->currency);
-        $dataPay = $dataPay->groupBy('store_id', 'currency')
-            ->get()
-            ->toArray();
-        $dataInsert = [];
-        foreach ($dataPay as $dataPayRaw) {
-            $dataPayRaw['id'] = gp247_uuid();
-            $dataPayRaw['content'] = 'Payment from '.$checkDateProcess.' to '.$startProcess;
-            $dataPayRaw['date_process'] = $startProcess;
-            // S1-1: the rate is per store (override row) with the marketplace rate as
-            // fallback; the ledger keeps the vendor share actually applied to this period.
-            $rate = CommissionPolicy::rateFor((string) $dataPayRaw['store_id']);
-            $dataPayRaw['commission_rate'] = CommissionPolicy::vendorShare($rate);
-            $dataPayRaw['amount'] = CommissionPolicy::amount((float) $dataPayRaw['total_sum'], $rate, (string) $dataPayRaw['currency']);
-            // S1-5: snapshot where the vendor wants to be paid, as it stood when the period was built.
-            $account = Payout::accountSnapshot((string) $dataPayRaw['store_id']);
-            $dataPayRaw['payout_method'] = $account['method'] !== '' ? $account['method'] : null;
-            $dataPayRaw['payout_account'] = $account['masked'] !== '' ? $account['masked'] : null;
-            $dataPayRaw['created_at'] = date('Y-m-d H:i:s');
-            $dataPayRaw['comment'] = "";
-            // S3-2 (Q1-B): money of an unverified store is booked but held (`pending`)
-            // while the marketplace requires KYC; root releases it once verified.
-            $dataPayRaw['status'] = Kyc::payoutStatusFor((string) $dataPayRaw['store_id']);
-            if ($dataPayRaw['status'] === 'pending') {
-                $dataPayRaw['comment'] = 'KYC pending';
-            }
-            $dataInsert[] = $dataPayRaw;
-        }
-
-        PayingVendor::dispatch($dataInsert);
-
-        // Process payment
-        $this->payProcess($dataInsert);
-        // End process payment
-
-        if ($dataInsert) {
-            AdminMoneyProcess::insert($dataInsert);
-            // S3-1: remember which orders each period row paid, then absorb pending
-            // clawback/refund adjustments of the same store × currency into the new row.
-            foreach ($dataInsert as $i => $row) {
-                $key = $row['store_id'].'|'.$row['currency'];
-                Payout::recordPeriodOrders((string) $row['id'], (string) $row['store_id'], (string) $row['currency'], (int) $row['commission_rate'], $ordersOfPeriod->get($key, collect()));
-                $net = Payout::netPending((string) $row['store_id'], (string) $row['currency'], (string) $row['id']);
-                if ($net != 0.0) {
-                    $dataInsert[$i]['amount'] = round((float) $row['amount'] + $net, CommissionPolicy::precision((string) $row['currency']));
-                    AdminMoneyProcess::where('id', $row['id'])->update([
-                        'amount' => $dataInsert[$i]['amount'],
-                        'comment' => trim('Adjustments netted: '.$net),
-                    ]);
-                }
-            }
-        }
-
-        PaidVendor::dispatch($dataInsert);
 
         $this->processDate = '';
         $this->resetPage();
         $this->notify('success', gp247_language_render('action.update_success'));
-    }
-
-    /**
-     * Payout side-effect seam (kept as the v1 no-op so integrators keep their hook).
-     *
-     * @param array<int, array<string, mixed>> $dataInsert The rows about to be inserted.
-     * @return void
-     */
-    private function payProcess(array $dataInsert): void
-    {
-        // code here
     }
 
     /**
@@ -299,21 +200,9 @@ class VendorPaymentManager extends GP247AdminComponent
 
         // WHY gp247_clean like v1: strip disallowed markup from admin-entered
         // strings before persisting (same signature the controller used).
-        $wasDone = (string) $payment->status === 'done';
         $data = gp247_clean($this->form, ['password'], true);
-        // S1-5: the admin who marks the row done is recorded once.
-        if (!$wasDone && (string) ($data['status'] ?? '') === 'done') {
-            $data['paid_by'] = (string) $this->adminIdForLedger();
-            if (empty($data['date_pay'] ?? null) && empty($payment->date_pay)) {
-                $data['date_pay'] = date('Y-m-d');
-            }
-        }
-        $payment->update($data);
-        // E4 (S1-2): the admin marking the row `done` is the "paid" moment (PaidVendor
-        // fires at period creation, not here) — tell the vendor once.
-        if (!$wasDone && (string) $payment->status === 'done') {
-            \App\GP247\Plugins\MultiVendor\Notifications\VendorNotifier::payoutDone($payment->fresh() ?? $payment);
-        }
+        // Moving the row to `done` stamps paid_by/date_pay and mails the vendor (PayoutRun).
+        PayoutRun::update($payment, $data, $this->adminIdForLedger());
 
         session()->flash('gp247_admin_success', gp247_language_render('action.edit_success'));
         $this->redirect(gp247_route_admin('admin_MultiVendorPayment.index'));

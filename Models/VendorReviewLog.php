@@ -44,7 +44,7 @@ class VendorReviewLog extends Model
                 $model->id = gp247_uuid();
             }
             if (empty($model->created_at)) {
-                $model->created_at = date('Y-m-d H:i:s');
+                $model->created_at = now()->toDateTimeString();
             }
         });
     }

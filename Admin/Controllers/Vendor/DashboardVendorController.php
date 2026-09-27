@@ -54,7 +54,7 @@ class DashboardVendorController extends RootVendorController
             ->pluck('total_amount', 'ym')->toArray();
         $dataInYear = [];
         for ($i = 12; $i >= 0; $i--) {
-            $date = date("Y-m", strtotime(date('Y-m-01') . " -$i months"));
+            $date = now()->startOfMonth()->subMonths($i)->format('Y-m');
             $dataInYear[$date] = $totalsMonth[$date] ?? 0;
         }
         $data['dataInYear'] = $dataInYear;

@@ -133,7 +133,7 @@ if (!function_exists('gp247_vendor_top_new')) {
  */
 if (!function_exists('gp247_order_success_finish')) {
     function gp247_order_success_finish($orderId) {
-        return \GP247\Shop\Models\ShopOrder::where('id', $orderId)->update(['finish_date' => date('Y-m-d')]);
+        return \GP247\Shop\Models\ShopOrder::where('id', $orderId)->update(['finish_date' => now()->toDateString()]);
     }
 }
 
@@ -193,6 +193,10 @@ if (!function_exists('gp247_cal_amount_order_done')) {
         ->where('status', 5);//Only process order completed
         if ($storeId) {
             $data = $data->where('store_id', $storeId);
+        } else {
+            // "Every vendor" is not "every store": the root store's orders are the
+            // marketplace's own revenue (RISK-BIZ-mv-root-orders-in-vendor-payout).
+            $data = $data->where('store_id', '<>', GP247_STORE_ID_ROOT);
         }
         $data = $data->groupBy('currency')
         ->get()
