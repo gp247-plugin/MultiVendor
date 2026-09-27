@@ -70,6 +70,22 @@
         $blockViews['vendor_new'] = $extensionPath.'::blocks.vendor_new';
         config(['gp247-config.front.layout_block_views' => $blockViews]);
 
+        // Vendor products use the marketplace's categories / brands / taxes — on every
+        // product screen, the vendor's and the marketplace admin's (gp247/shop resolver).
+        $referenceResolvers = config('gp247-config.shop.product_reference_store_resolvers', []);
+        $referenceResolvers[] = [
+            'key' => \App\GP247\Plugins\MultiVendor\Catalogue\MarketplaceTaxonomy::RESOLVER_KEY,
+            'callback' => [\App\GP247\Plugins\MultiVendor\Catalogue\MarketplaceTaxonomy::class, 'referenceStore'],
+        ];
+        config(['gp247-config.shop.product_reference_store_resolvers' => $referenceResolvers]);
+
+        // The core product cleanup (ShopProduct::boot deleting) only knows core tables;
+        // the shop-category link is this plugin's, so it goes with the product here —
+        // on every delete path (vendor screen, marketplace admin screen, destroy()).
+        \GP247\Shop\Models\ShopProduct::deleting(function ($product) {
+            \App\GP247\Plugins\MultiVendor\Models\VendorProductCategory::where('product_id', $product->id)->delete();
+        });
+
 
         //Config for file manager
         $configLfm = config('lfm.folder_categories');

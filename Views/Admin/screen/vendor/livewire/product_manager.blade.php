@@ -204,7 +204,9 @@
 
                     <div class="flex flex-wrap gap-4">
                         <x-gp247::checkbox :label="gp247_language_render('admin.active')" wire:model="form.status" value="1" />
-                        <x-gp247::checkbox :label="gp247_language_render('product.approve')" wire:model="form.approve" value="1" />
+                        @if ($this->vendorCanSelfApprove())
+                            <x-gp247::checkbox :label="gp247_language_render('product.approve')" wire:model="form.approve" value="1" />
+                        @endif
                     </div>
                 </div>
 

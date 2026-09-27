@@ -240,12 +240,6 @@ if (gp247_config_global('MultiVendor')) {
                 Route::get('/product-mng', '\App\GP247\Plugins\MultiVendor\Admin\Livewire\Vendor\VendorProductManager')
                     ->name('vendor_admin_product.index');
 
-                // Import is not yet migrated — it stays on the controller.
-                Route::group(['prefix' => 'product'], function () {
-                    Route::get('/import', 'VendorProductController@import')->name('vendor_admin_product.import');
-                    Route::post('/import', 'VendorProductController@postImport')->name('vendor_admin_product.import');
-                });
-
                 // Banner/Supplier — single Livewire screen each (list + inline
                 // create/edit/delete as component actions). Leading-backslash FQN
                 // keeps the namespaced group from prefixing the controller namespace.

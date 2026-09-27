@@ -1052,8 +1052,39 @@ class AppConfig extends ExtensionConfigDefault
         self::seedTrustSignalLanguage();
         self::seedPlanLanguage();
         self::seedPlanSelfServiceLanguage();
+        self::pruneOrphanVendorCategoryLinks();
 
         event(self::SEED_EVENT);
+    }
+
+    /**
+     * Remove shop-category links whose product no longer exists. Deleting a
+     * product used to leave its `vendor_product_category` row behind (the core
+     * cleanup does not know plugin tables), so sites that ran before the delete
+     * listener carry dead rows that skew per-category counts. Idempotent and
+     * bound to rows pointing at missing products — a live product's link is never
+     * touched. Irreversible, but what it removes points at nothing.
+     *
+     * @return int Number of links removed.
+     *
+     * @aidlc-unit multi-vendor-pro
+     * @aidlc-story US-multi-vendor-pro-vendor-admin-livewire
+     */
+    public static function pruneOrphanVendorCategoryLinks(): int
+    {
+        $links = (new \App\GP247\Plugins\MultiVendor\Models\VendorProductCategory)->getTable();
+        $products = (new \GP247\Shop\Models\ShopProduct)->getTable();
+        $schema = \Illuminate\Support\Facades\Schema::connection(GP247_DB_CONNECTION);
+        if (!$schema->hasTable($links)) {
+            return 0;
+        }
+
+        return \Illuminate\Support\Facades\DB::connection(GP247_DB_CONNECTION)
+            ->table($links)
+            ->whereNotExists(function ($query) use ($links, $products) {
+                $query->selectRaw('1')->from($products)->whereColumn($products.'.id', $links.'.product_id');
+            })
+            ->delete();
     }
 
     /**

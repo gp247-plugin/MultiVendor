@@ -33,6 +33,10 @@ use Illuminate\Contracts\View\View;
  *   3. Vendor extras — the required `vendor_category_id` (stored 1-1 in
  *      vendor_product_category) and the marketplace approve gate
  *      (MultiVendor_product_auto_approve).
+ *   4. Reference store — products are filed under the MARKETPLACE taxonomy (root
+ *      categories / brands / taxes) while staying owned by the vendor's store. Not
+ *      overridden here: the plugin's MarketplaceTaxonomy resolver (Provider) answers
+ *      for every product screen, this one and the marketplace admin's.
  *
  * @aidlc-unit multi-vendor-pro
  * @aidlc-story US-multi-vendor-pro-vendor-admin-livewire
@@ -42,6 +46,61 @@ class VendorProductManager extends \GP247\Shop\Admin\Livewire\ProductManager
 {
     /** The plugin's vendor admin shell (replaces the core admin layout). */
     protected const VENDOR_LAYOUT = 'Plugins/MultiVendor::Admin.layout';
+
+    /**
+     * The store the signed-in vendor owns (set at login in session `adminStoreId`).
+     * Same contract as VendorAdminComponent / VendorResourcePanel, which this class
+     * cannot extend because it must extend the concrete core ProductManager.
+     *
+     * @return string|null
+     */
+    protected function vendorStoreId(): ?string
+    {
+        return session('adminStoreId');
+    }
+
+    /**
+     * Whether a save by this vendor keeps the Approve box's value. It is false
+     * when the marketplace reviews every product (auto-approve off) or while the
+     * store's identity check still blocks publishing; persist() then forces the
+     * product to unapproved, so the form hides a box that would do nothing.
+     *
+     * @return bool
+     */
+    public function vendorCanSelfApprove(): bool
+    {
+        return (bool) gp247_config_global('MultiVendor_product_auto_approve')
+            // S3-2 (Q1-B): an unverified store never self-publishes while KYC is required,
+            // even with marketplace auto-approve on.
+            && !Kyc::blocks((string) $this->vendorStoreId());
+    }
+
+    /**
+     * Core field names plus the vendor category, so a validation error reads the
+     * field's label instead of its `form.vendor_category_id` path.
+     *
+     * @return array<string, string>
+     */
+    public function validationAttributes(): array
+    {
+        return array_merge(parent::validationAttributes(), [
+            'form.vendor_category_id' => gp247_language_render('product.category_store'),
+        ]);
+    }
+
+    /**
+     * Core localized messages plus the vendor category's required message.
+     *
+     * @return array<string, string>
+     */
+    protected function messages(): array
+    {
+        return array_merge(parent::messages(), [
+            'form.vendor_category_id.required' => gp247_language_render('validation.required', [
+                'attribute' => gp247_language_render('product.category_store'),
+            ]),
+        ]);
+    }
 
     /**
      * No admin RBAC on read — the route's vendor middleware already gated access
@@ -175,10 +234,7 @@ class VendorProductManager extends \GP247\Shop\Admin\Livewire\ProductManager
         // marketplace turns auto-approve on. Force it into the payload the inherited
         // productAttributes() reads (approve = empty($data['approve']) ? 0 : 1), so
         // the product is stored unapproved regardless of the submitted checkbox.
-        $needsReview = !gp247_config_global('MultiVendor_product_auto_approve')
-            // S3-2 (Q1-B): an unverified store never self-publishes while KYC is required,
-            // even with marketplace auto-approve on.
-            || Kyc::blocks((string) $this->vendorStoreId());
+        $needsReview = !$this->vendorCanSelfApprove();
         if ($needsReview) {
             $data['approve'] = 0;
         }

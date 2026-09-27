@@ -72,11 +72,11 @@ class DashboardVendorController extends RootVendorController
     public function dataNotFound()
     {
         $data = [
-            'title' => gp247_language_render('vendor_admin.data_not_found'),
+            'title' => gp247_language_render('admin.display.data_not_found'),
             'icon' => '',
             'url' => session('url'),
         ];
-        return view($this->plugin->appPath.'::vendor_admin.data_not_found', $data);
+        return view($this->plugin->appPath.'::Admin.data_not_found', $data);
     }
 
 

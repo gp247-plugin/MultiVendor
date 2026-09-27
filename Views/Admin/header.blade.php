@@ -9,7 +9,7 @@
     $vendorUser = vendor()->user();
     $vendorAvatar = ($vendorUser && $vendorUser->avatar)
         ? gp247_file($vendorUser->avatar)
-        : gp247_file('GP247/Core/avatar/user.jpg');
+        : gp247_file('GP247/Core/avatar/user.png');
 
     $languages = gp247_language_all();
     $currentLocale = session('locale') ?? app()->getLocale();
@@ -71,7 +71,7 @@
         @endif
 
         <button type="button" x-on:click="$store.gp247.toggleTheme()"
-            class="{{ $iconButton }}" aria-label="{{ gp247_language_render('admin.toggle_theme') }}">
+            class="{{ $iconButton }}" aria-label="{{ gp247_language_render('admin.toggle_dark') }}">
             <i class="fas" :class="dark ? 'fa-sun' : 'fa-moon'"></i>
         </button>
 

@@ -5,6 +5,15 @@
 ## Giới thiệu
 Trang này ghi các phiên bản của plugin MultiVendor và những thay đổi đáng chú ý trong mỗi bản, để chủ sàn biết mình đang dùng bản nào và nâng cấp thì được gì. Tính năng chi tiết xem [tài liệu Tổng quan sàn](https://gp247.net/vi/docs/plugin-multi-vendor/multi-vendor-overview.html) trên gp247.net.
 
+## Phiên bản 1.0.5
+- **Vendor tạo và sửa sản phẩm được trở lại.** Ô **Danh mục**, **Thương hiệu**, **Thuế** và bộ lọc danh mục ở danh sách sản phẩm của vendor giờ liệt kê danh mục, thương hiệu, thuế của sàn — trước đó các ô này trống nên vendor không lưu được sản phẩm nào. Sản phẩm vẫn thuộc gian hàng của vendor; vendor không chọn được danh mục của gian hàng khác. Cần cập nhật `gp247/shop` cùng đợt.
+- **Chủ sàn duyệt và sửa được sản phẩm của vendor ở màn Sản phẩm của trang quản trị.** Trước đó màn này báo lỗi danh mục khi lưu sản phẩm của gian hàng vendor, nên ở bản miễn phí (không có hàng chờ duyệt) chủ sàn không duyệt được sản phẩm nào. Nay màn Sản phẩm của chủ sàn và màn của vendor dùng chung một quy tắc: sản phẩm của gian hàng xếp vào danh mục, thương hiệu, thuế của sàn.
+- **Xoá sản phẩm không còn để lại liên kết danh mục riêng của gian hàng.** Trước đó mỗi lần xoá sản phẩm để lại một dòng liên kết vô chủ, làm lệch số sản phẩm theo danh mục của gian hàng. Cập nhật plugin tự dọn các dòng vô chủ đã có.
+- **Khách mở và rút khiếu nại được khi site dùng đường dẫn có mã ngôn ngữ** (ví dụ `/en/...`). Trước đó nút gửi khiếu nại dẫn tới trang lỗi 404 và không khiếu nại nào được tạo.
+- **Trang "không tìm thấy dữ liệu" của khu vendor hiển thị đúng** (trước đó báo lỗi 500), ví dụ khi vendor mở một đơn hàng không thuộc gian hàng của mình.
+- **Ô "Duyệt" trên form sản phẩm chỉ hiện khi vendor thực sự tự duyệt được** — khi sàn duyệt mọi sản phẩm, ô này không còn hiện ra mà không có tác dụng.
+- Chữ hiển thị: thông báo lỗi của ô Danh mục riêng ghi đúng tên ô; nút bật/tắt nền tối có nhãn; ảnh đại diện mặc định tải được. Gỡ đường dẫn nhập sản phẩm `/vendor_admin/product/import` vốn chưa từng hoạt động.
+
 ## Phiên bản 1.0.4
 - **Khu vendor admin phân biệt rõ với trang quản trị của sàn.** Mọi màn của vendor — cả màn đăng nhập, đăng ký, quên mật khẩu — có một dải màu cam ở mép trên và nhãn **VENDOR** (ở đầu thanh menu bên trái và phía trên tiêu đề màn đăng nhập), nên người dùng không nhầm mình đang ở trang quản trị nào. Trang quản trị của sàn không thay đổi. Kiểu dáng nằm trong tệp CSS riêng `public/css/vendor-theme.css` — muốn đổi màu chỉ cần sửa tệp này, không cần công cụ build.
 - **README có thêm hướng dẫn cài bằng dòng lệnh** (gp247 3.x): đăng ký license kết nối thư viện rồi `php artisan gp247:ext-install --type=plugin --key=MultiVendor`.

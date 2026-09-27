@@ -217,11 +217,34 @@ class FrontController extends RootFrontController
     }
 
     /**
+     * The order id of a dispute route, read by NAME. WHY: the routes are
+     * `{lang?}/shop/dispute/{order}` and Laravel hands route parameters to an action
+     * by POSITION — with language-prefixed URLs a `string $order` argument would
+     * receive the language code. Also switches to that language, like vendorDetail().
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return string
+     *
+     * @aidlc-unit multi-vendor-pro
+     * @aidlc-story US-multi-vendor-pro-order-dispute
+     */
+    private function disputeOrderId(\Illuminate\Http\Request $request): string
+    {
+        $lang = (string) ($request->route('lang') ?? '');
+        if (GP247_SEO_LANG && $lang !== '') {
+            gp247_lang_switch($lang);
+        }
+
+        return (string) $request->route('order');
+    }
+
+    /**
      * S3-3: a signed-in customer opens a dispute on one of their own orders.
      * Redirects back to the order page with a notice (the dispute box shows it).
      */
-    public function openDispute(\Illuminate\Http\Request $request, string $order)
+    public function openDispute(\Illuminate\Http\Request $request)
     {
+        $order = $this->disputeOrderId($request);
         $customer = customer()->user();
         $model = $customer ? ShopOrder::where('id', $order)->where('customer_id', $customer->id)->first() : null;
         if ($model === null) {
@@ -244,8 +267,9 @@ class FrontController extends RootFrontController
     /**
      * S3-3: the customer withdraws their still-open dispute.
      */
-    public function withdrawDispute(string $order)
+    public function withdrawDispute(\Illuminate\Http\Request $request)
     {
+        $order = $this->disputeOrderId($request);
         $customer = customer()->user();
         $dispute = $customer ? Dispute::forOrder($order) : null;
         $ok = $dispute !== null && Dispute::withdraw($dispute, (string) $customer->id);
