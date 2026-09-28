@@ -34,16 +34,41 @@ class RootConfigForm extends ConfigForm
      */
     public function mount(): void
     {
-        AppConfig::seedNotificationSettings();
+        $this->upkeep('notification settings seed', fn () => AppConfig::seedNotificationSettings());
         // A site installed before the convergence fix (mod 20260920T182637) — or
         // reinstalled by an older copy of this plugin — has lost the Pro menu
         // items. This is the screen the marketplace owner does reach, so repair
         // from here; the call costs one count query when nothing is missing.
-        AppConfig::repairIfNeeded();
+        $this->upkeep('menu repair', fn () => AppConfig::repairIfNeeded());
         // S2-1: one opt-in flag per eligible plugin (default OFF); the set follows what
         // is installed. Asked through the free contract — a no-op without the paid plugin.
-        VendorPlugins::seedSettings();
+        $this->upkeep('vendor plugin settings seed', fn () => VendorPlugins::seedSettings());
         parent::mount();
+    }
+
+    /**
+     * Run an upkeep step that piggy-backs on opening the screen.
+     *
+     * WHY: the step writes (insertOrIgnore always sends an INSERT), and a database
+     * that refuses writes — the read-only demo, a read-only DB user, a lock
+     * timeout — must still let the owner see the settings; the step runs again on
+     * the next open. Saving is not upkeep and keeps failing loudly. Kept local
+     * because the free plugin cannot call the paid plugin's helper.
+     *
+     * @param string   $label Short name of the step, used in the log line.
+     * @param callable $work  The upkeep work.
+     * @return void
+     *
+     * @aidlc-unit multi-vendor-pro
+     * @aidlc-story US-multi-vendor-pro-root-admin-livewire
+     */
+    private function upkeep(string $label, callable $work): void
+    {
+        try {
+            $work();
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('MultiVendor settings: skipped '.$label.' — '.$e->getMessage());
+        }
     }
 
     /**
