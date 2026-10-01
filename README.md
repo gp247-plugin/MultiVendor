@@ -2,6 +2,8 @@
 
 # MultiVendor — Multi-vendor marketplace for S-Cart (Free) · MultiVendorPro (Pro)
 
+> 🚀 **Link MultiVendor PRO:** [https://gp247.net/en/product/multi-vendor-pro.html](https://gp247.net/en/product/multi-vendor-pro.html)
+
 ## Introduction
 MultiVendor turns an S-Cart website into a **multi-vendor marketplace on a single domain**: vendors (vendors) list their products on one shared storefront, shoppers buy from several vendors in one visit, and the marketplace collects the payment, then pays each vendor back after keeping a commission. This page is for **business owners and S-Cart site owners** deciding whether to open a marketplace: what the plugin does, what Free gives you and what Pro adds. It is the entry point to the detailed documents below.
 
@@ -15,7 +17,7 @@ You keep the money and the control: **the marketplace collects from the shopper,
 Pro adds the tools you need once the marketplace gets busy: vendor plans, clawback when an order is refunded, disputes, identity verification, reporting and wholesale ordering for dealers.
 
 ### In detail
-Features marked **Pro** need `MultiVendorPro` installed next to the free plugin.
+Features marked **Pro** need `MultiVendorPro` installed next to the free plugin — see [MultiVendor Pro on gp247.net](https://gp247.net/en/product/multi-vendor-pro.html).
 
 #### Selling on the marketplace
 
@@ -80,13 +82,15 @@ The detailed guides live on the GP247 documentation site — **one source**, alw
 | [Operations](https://gp247.net/en/docs/plugin-multi-vendor/multi-vendor-operations.html) | Every marketplace setting (with its `admin_config` key), money and payouts, moderation, disputes, verification |
 | [Customisation](https://gp247.net/en/docs/plugin-multi-vendor/multi-vendor-customize.html) | Change wording, replace views in a template, developer hooks |
 | [Release history](./Release-history/v1.md) | Versions and changes |
-| Product page | [gp247.net — MultiVendor](https://gp247.net/en/product/multi-vendor-pro.html) |
+| Pro product page | [gp247.net — MultiVendor Pro](https://gp247.net/en/product/multi-vendor-pro.html) |
 | Vietnamese version of this README | [README_vi.md](./README_vi.md) |
 
 ## Free vs Pro
 **Who buys Pro**: the marketplace owner. Vendors and customers never pay anything to GP247 and never see an upgrade offer — the Free edition shows the owner where each Pro feature would live, and one click explains it.
 
 Free is a working marketplace for up to 3 vendors. Pro is a second plugin installed **on top of** Free (`MultiVendorPro`, requires `MultiVendor`): install it and every locked entry opens the real screen — nothing is reinstalled, no data moves, and the tables Pro created are kept if you ever remove it.
+
+> 🚀 **Link MultiVendor PRO:** [https://gp247.net/en/product/multi-vendor-pro.html](https://gp247.net/en/product/multi-vendor-pro.html)
 
 | | **MultiVendor (Free)** | **MultiVendorPro (Pro)** |
 | --- | --- | --- |

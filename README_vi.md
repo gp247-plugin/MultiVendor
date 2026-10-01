@@ -2,6 +2,8 @@
 
 # MultiVendor — Sàn thương mại nhiều người bán cho S-Cart (Free) · MultiVendorPro (Pro)
 
+> 🚀 **Link MultiVendor PRO:** [https://gp247.net/vi/product/multi-vendor-pro.html](https://gp247.net/vi/product/multi-vendor-pro.html)
+
 ## Giới thiệu
 MultiVendor biến một website S-Cart thành **sàn thương mại điện tử nhiều người bán trên một domain duy nhất**: các nhà cung cấp (vendor) đăng sản phẩm lên cùng một storefront, khách mua hàng của nhiều vendor trong một lần ghé, sàn đứng ra thu tiền rồi trả lại vendor sau khi giữ hoa hồng. Tài liệu này dành cho **chủ doanh nghiệp và chủ website S-Cart** đang cân nhắc mở sàn: plugin làm được những gì, bản Free cho gì và bản Pro thêm gì. Đây là điểm vào dẫn tới các tài liệu chi tiết bên dưới.
 
@@ -15,7 +17,7 @@ Bạn giữ tiền và giữ quyền: **sàn thu tiền của khách, giữ hoa 
 Bản Pro thêm công cụ cho lúc sàn đông người bán: gói gian hàng, thu hồi tiền khi đơn bị hoàn, khiếu nại, xác minh danh tính, báo cáo và bán sỉ cho đại lý.
 
 ### Chi tiết
-Tính năng ghi **Pro** cần cài thêm `MultiVendorPro` bên cạnh bản miễn phí.
+Tính năng ghi **Pro** cần cài thêm `MultiVendorPro` bên cạnh bản miễn phí — xem [MultiVendor Pro trên gp247.net](https://gp247.net/vi/product/multi-vendor-pro.html).
 
 #### Bán hàng trên sàn
 
@@ -80,13 +82,15 @@ Hướng dẫn chi tiết nằm trên trang tài liệu của GP247 — **một 
 | [Vận hành](https://gp247.net/vi/docs/plugin-multi-vendor/multi-vendor-operations.html) | Toàn bộ cấu hình sàn (kèm khoá `admin_config`), tiền và chi trả, kiểm duyệt, khiếu nại, xác minh |
 | [Tùy chỉnh](https://gp247.net/vi/docs/plugin-multi-vendor/multi-vendor-customize.html) | Đổi chữ hiển thị, thay view trong template, điểm cắm cho lập trình viên |
 | [Lịch sử phát hành](./Release-history/v1_vi.md) | Các phiên bản và thay đổi |
-| Trang sản phẩm | [gp247.net — MultiVendor](https://gp247.net/vi/product/multi-vendor-pro.html) |
+| Trang sản phẩm bản Pro | [gp247.net — MultiVendor Pro](https://gp247.net/vi/product/multi-vendor-pro.html) |
 | Bản tiếng Anh của README này | [README.md](./README.md) |
 
 ## So sánh Free và Pro
 **Ai mua Pro**: chủ sàn. Vendor và khách hàng không trả gì cho GP247 và không bao giờ thấy lời mời nâng cấp — bản Free chỉ cho chủ sàn thấy mỗi tính năng Pro sẽ nằm ở đâu, bấm vào là có trang giải thích.
 
 Free là một sàn chạy thật cho tối đa 3 vendor. Pro là plugin thứ hai cài **thêm** lên Free (`MultiVendorPro`, yêu cầu `MultiVendor`): cài xong, mọi lối vào đang khoá mở thẳng màn thật — không cài lại, không chuyển dữ liệu, và các bảng Pro tạo ra được giữ nguyên nếu bạn gỡ Pro.
+
+> 🚀 **Link MultiVendor PRO:** [https://gp247.net/vi/product/multi-vendor-pro.html](https://gp247.net/vi/product/multi-vendor-pro.html)
 
 | | **MultiVendor (Free, miễn phí)** | **MultiVendorPro (Pro)** |
 | --- | --- | --- |
