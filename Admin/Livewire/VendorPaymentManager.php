@@ -5,6 +5,7 @@ namespace App\GP247\Plugins\MultiVendor\Admin\Livewire;
 use App\GP247\Plugins\MultiVendor\Admin\Models\AdminMoneyProcess;
 use App\GP247\Plugins\MultiVendor\Payout\Payout;
 use App\GP247\Plugins\MultiVendor\Payout\PayoutRun;
+use App\GP247\Plugins\MultiVendor\Payout\VendorPayoutPurpose;
 use GP247\Core\AdminShell\Infrastructure\GP247AdminComponent;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Url;
@@ -206,6 +207,61 @@ class VendorPaymentManager extends GP247AdminComponent
 
         session()->flash('gp247_admin_success', gp247_language_render('action.edit_success'));
         $this->redirect(gp247_route_admin('admin_MultiVendorPayment.index'));
+    }
+
+    /**
+     * Raise a core payment request (money out) for the row being edited and open it, so
+     * whoever holds the money-out permission records the transfer; the row turns done
+     * when the request is fully paid (VendorPayoutPurpose).
+     *
+     * @return void
+     * @throws \GP247\Core\AdminShell\Domain\AuthorizationException When denied.
+     *
+     * @aidlc-story US-multi-vendor-pro-payout-payment-request
+     */
+    public function createPaymentRequest(): void
+    {
+        $this->authorizeAction('save');
+        $payment = $this->editId !== null ? AdminMoneyProcess::find($this->editId) : null;
+        if ($payment === null || !$this->canCreatePaymentRequest()) {
+            return;
+        }
+
+        try {
+            $request = app(\GP247\Shop\Payment\PaymentRequestService::class)->create([
+                'direction' => 'out',
+                'purpose' => VendorPayoutPurpose::KEY,
+                'amount' => (float) $payment->amount,
+                'currency' => (string) $payment->currency,
+                'subject_type' => VendorPayoutPurpose::SUBJECT_TYPE,
+                'subject_id' => (string) $payment->id,
+                'store_id' => (string) GP247_STORE_ID_ROOT,
+                'party_name' => function_exists('gp247_store_info') ? (string) (gp247_store_info('title', null, $payment->store_id) ?: $payment->store_id) : (string) $payment->store_id,
+                'description' => (string) $payment->content,
+                'created_by' => (string) $this->adminIdForLedger() ?: null,
+            ]);
+        } catch (\InvalidArgumentException $e) {
+            $this->notify('error', $e->getMessage());
+
+            return;
+        }
+
+        $this->redirect(route('admin.payment_request.edit', ['id' => $request->id]));
+    }
+
+    /**
+     * Whether a payout request can be raised for the row being edited by this admin.
+     *
+     * @return bool
+     */
+    public function canCreatePaymentRequest(): bool
+    {
+        if ($this->editId === null || !VendorPayoutPurpose::canCreate()) {
+            return false;
+        }
+        $payment = AdminMoneyProcess::find($this->editId);
+
+        return $payment !== null && VendorPayoutPurpose::payable($payment);
     }
 
     /** Admin id for the ledger's paid_by column (0 when unavailable). */

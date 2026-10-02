@@ -36,6 +36,9 @@
             $this->mergeConfigFrom(__DIR__.'/config.php', $extensionPath);
         }
 
+        // A period payout can be paid through the core's payment requests.
+        \App\GP247\Plugins\MultiVendor\Payout\VendorPayoutPurpose::register();
+
         // WHY: store the i18n KEY, not the raw token — the "Layout block" admin
         // screen renders each option through gp247_language_render(), so a raw
         // token showed up untranslated as "vendor_home - vendor_home".

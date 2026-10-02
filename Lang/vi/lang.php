@@ -26,4 +26,14 @@ return [
         'vendor_product_list' => 'Danh sách sản phẩm gian hàng',
         'vendor_index'        => 'Danh bạ gian hàng',
     ],
+    // Yêu cầu thanh toán của lõi: chi trả một kỳ qua yêu cầu chi.
+    'payreq_purpose' => 'Chi trả vendor (sàn)',
+    'payreq_create' => 'Chi qua yêu cầu thanh toán',
+    'payreq_row_missing' => 'Không tìm thấy dòng chi trả',
+    'payreq_row_not_payable' => 'Chỉ dòng chi trả kỳ chưa trả (đang xử lý, số tiền > 0) mới chi qua yêu cầu được',
+    'payreq_row_currency' => 'Tiền tệ phải trùng dòng chi trả (:currency)',
+    'payreq_row_over' => 'Tối đa :max cho dòng chi trả này',
+    'payreq_root_only' => 'Chi trả vendor do sàn (store gốc) thực hiện',
+    'payreq_subject_label' => 'Mã dòng chi trả',
+    'payreq_subject_help' => 'Dễ nhất: mở dòng chi trả ở màn chi trả vendor và bấm "Chi qua yêu cầu thanh toán"',
 ];

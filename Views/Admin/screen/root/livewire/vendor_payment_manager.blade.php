@@ -103,7 +103,12 @@
                 </div>
 
                 <x-slot:footer>
-                    <div class="flex items-center justify-end">
+                    <div class="flex items-center justify-end gap-2">
+                        @if ($this->canCreatePaymentRequest())
+                            <x-gp247::button variant="secondary" wire:click="createPaymentRequest" data-testid="multi-vendor-payout-payment-request">
+                                <i class="fas fa-hand-holding-usd"></i> {{ gp247_language_render('Plugins/MultiVendor::lang.payreq_create') }}
+                            </x-gp247::button>
+                        @endif
                         <x-gp247::button type="submit" variant="primary" wire:loading.attr="disabled"
                             data-testid="multi-vendor-pro-payment-edit-submit">
                             {{ gp247_language_render('action.submit') }}

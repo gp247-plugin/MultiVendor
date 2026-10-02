@@ -27,4 +27,14 @@ return [
         'vendor_product_list' => 'Vendor product list',
         'vendor_index'        => 'Vendor directory',
     ],
+    // Core payment requests: pay a period payout through a money-out request.
+    'payreq_purpose' => 'Vendor payout (marketplace)',
+    'payreq_create' => 'Pay through a payment request',
+    'payreq_row_missing' => 'Payout row not found',
+    'payreq_row_not_payable' => 'Only an unpaid period payout (status processing, amount above 0) can be paid through a request',
+    'payreq_row_currency' => 'The currency must be the payout\'s (:currency)',
+    'payreq_row_over' => 'At most :max for this payout',
+    'payreq_root_only' => 'A vendor payout is paid by the marketplace (root store)',
+    'payreq_subject_label' => 'Payout row ID',
+    'payreq_subject_help' => 'Easiest: open the payout row on the vendor payment screen and use "Pay through a payment request"',
 ];

@@ -34,7 +34,7 @@ Tính năng ghi **Pro** cần cài thêm `MultiVendorPro` bên cạnh bản mi�
 | Tính năng | Nội dung | Bản |
 | --- | --- | --- |
 | Sàn thu tiền | Chỉ chủ sàn cấu hình cổng thanh toán; người bán không nhận tiền trực tiếp từ khách | Free |
-| Sổ chi trả theo kỳ | Đơn hoàn thành được gom theo kỳ: số tiền phải trả sau hoa hồng, tài khoản nhận tiền của người bán, mã giao dịch | Free |
+| Sổ chi trả theo kỳ | Đơn hoàn thành được gom theo kỳ: số tiền phải trả sau hoa hồng, tài khoản nhận tiền của người bán, mã giao dịch; chi từng kỳ qua **Yêu cầu thanh toán** của `gp247/shop` (người lập và người chi tách quyền, tự đánh dấu đã trả) | Free |
 | Hoa hồng toàn sàn | Một tỷ lệ áp cho mọi gian hàng | Free |
 | Hoa hồng riêng từng gian hàng | Phân giải theo thứ tự: tỷ lệ riêng của gian hàng → tỷ lệ của gói → tỷ lệ sàn | Pro |
 | Gói gian hàng | Trần sản phẩm, hoa hồng theo gói và phí theo kỳ được trừ thẳng vào lần chi trả kế tiếp — nguồn thu thứ hai ngoài hoa hồng | Pro |
@@ -114,7 +114,7 @@ Free là một sàn chạy thật cho tối đa 3 vendor. Pro là plugin thứ h
 | Hỗ trợ | cộng đồng | kênh trả phí của GP247 |
 
 ## Yêu cầu
-- S-Cart 3.x với `gp247/core` **3.0** và `gp247/shop` đã cài.
+- S-Cart 3.x với `gp247/core` **3.1** và `gp247/shop` đã cài.
 - **Không** cài đồng thời với plugin MultiStore (hai mô hình loại trừ lẫn nhau).
 - Chạy trên hosting chia sẻ thông thường: không cần cron, queue worker hay websocket.
 
@@ -131,7 +131,7 @@ php artisan gp247:ext-install --type=plugin --key=MultiVendor
 
 - Trước bước 1, kiểm tra `APP_URL` trong `.env` là **domain thật** của website (không để `http://localhost`), vì license được gắn với domain này.
 - Cài xong, plugin được **bật sẵn** và cache tự làm mới, bạn không cần thao tác gì thêm trong admin.
-- Lệnh tự kiểm tra điều kiện khai báo trong `gp247.json` (core 3.0, `gp247/shop`, plugin phụ thuộc, quy tắc không cài chung với MultiStore). Nếu thiếu, lệnh dừng lại và báo rõ thiếu gì.
+- Lệnh tự kiểm tra điều kiện khai báo trong `gp247.json` (core 3.1, `gp247/shop`, plugin phụ thuộc, quy tắc không cài chung với MultiStore). Nếu thiếu, lệnh dừng lại và báo rõ thiếu gì.
 - Nếu thư mục plugin đã có sẵn trong `app/GP247/Plugins/` (chép thủ công hoặc giải nén từ file zip), lệnh sẽ **cài tại chỗ**, không tải lại.
 - Nếu plugin đã được cài, lệnh sẽ từ chối. Để lên bản mới, chạy `php artisan gp247:ext-update --type=plugin --key=MultiVendor`.
 - Thêm `--json` vào cuối lệnh để nhận kết quả dạng máy đọc được (dùng cho script/CI).

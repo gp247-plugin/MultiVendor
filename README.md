@@ -34,7 +34,7 @@ Features marked **Pro** need `MultiVendorPro` installed next to the free plugin 
 | Feature | What it does | Edition |
 | --- | --- | --- |
 | The marketplace collects | Only the owner configures payment gateways; vendors never take money from the shopper directly | Free |
-| Payout ledger per period | Completed orders are gathered per period: the amount owed after commission, the vendor's payout account, the transaction reference | Free |
+| Payout ledger per period | Completed orders are gathered per period: the amount owed after commission, the vendor's payout account, the transaction reference; pay a period through a **payment request** of `gp247/shop` (preparer and payer have separate permissions, the row is marked paid automatically) | Free |
 | Marketplace-wide commission | One rate applied to every store | Free |
 | Commission per store | Resolved in order: the store's own rate → its plan's rate → the marketplace rate | Pro |
 | Vendor plans | A product cap, a plan commission and a periodic fee deducted straight from the next payout — a second income stream next to commission | Pro |
@@ -114,7 +114,7 @@ Free is a working marketplace for up to 3 vendors. Pro is a second plugin instal
 | Support | community | GP247 paid channel |
 
 ## Requirements
-- S-Cart 3.x with `gp247/core` **3.0** and `gp247/shop` installed.
+- S-Cart 3.x with `gp247/core` **3.1** and `gp247/shop` installed.
 - **Not** installed together with the MultiStore plugin (the two models are mutually exclusive).
 - Runs on ordinary shared hosting: no cron, no queue worker, no websocket needed.
 
@@ -131,7 +131,7 @@ php artisan gp247:ext-install --type=plugin --key=MultiVendor
 
 - Before step 1, make sure `APP_URL` in `.env` is the website's **real domain** (not `http://localhost`) — the license is bound to that domain.
 - Once installed, the plugin is **enabled** and caches are refreshed automatically; nothing else is needed in the admin.
-- The command checks the requirements declared in `gp247.json` (core 3.0, `gp247/shop`, required plugins, the rule against installing alongside MultiStore) and stops with a clear message if something is missing.
+- The command checks the requirements declared in `gp247.json` (core 3.1, `gp247/shop`, required plugins, the rule against installing alongside MultiStore) and stops with a clear message if something is missing.
 - If the plugin folder is already in `app/GP247/Plugins/` (copied manually or unpacked from the zip), the command **installs it in place** instead of downloading it again.
 - The command refuses a plugin that is already installed. To move to a newer version, run `php artisan gp247:ext-update --type=plugin --key=MultiVendor`.
 - Append `--json` to get machine-readable output (for scripts/CI).
