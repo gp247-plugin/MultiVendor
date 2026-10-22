@@ -65,15 +65,15 @@ class SampleData extends Command
     protected $description = 'Seed sample marketplace data: 3 vendor stores, each with a login, a supplier, 3 categories and 9 products';
 
     /**
-     * The sample stores: store id => [code, English name, Vietnamese name].
+     * The sample stores: store id => [code, English name, Japanese name, Vietnamese name].
      *
      * Stores stay open (status/active = 1) so every one of them can be visited
      * and signed into straight after seeding.
      */
     private const STORES = [
-        'ST-VENDOR-01' => ['code' => 'vendor01', 'en' => 'Vendor 01', 'vi' => 'Nhà bán lẻ 01'],
-        'ST-VENDOR-02' => ['code' => 'vendor02', 'en' => 'Vendor 02', 'vi' => 'Nhà bán lẻ 02'],
-        'ST-VENDOR-03' => ['code' => 'vendor03', 'en' => 'Vendor 03', 'vi' => 'Nhà bán lẻ 03'],
+        'ST-VENDOR-01' => ['code' => 'vendor01', 'en' => 'Vendor 01', 'ja' => 'ベンダー 01', 'vi' => 'Nhà bán lẻ 01'],
+        'ST-VENDOR-02' => ['code' => 'vendor02', 'en' => 'Vendor 02', 'ja' => 'ベンダー 02', 'vi' => 'Nhà bán lẻ 02'],
+        'ST-VENDOR-03' => ['code' => 'vendor03', 'en' => 'Vendor 03', 'ja' => 'ベンダー 03', 'vi' => 'Nhà bán lẻ 03'],
     ];
 
     /**
@@ -91,25 +91,25 @@ class SampleData extends Command
     private const PRODUCTS_PER_CATEGORY = 3;
 
     /**
-     * The three categories of each store, in both languages. The category name
+     * The three categories of each store, in every sample language. The category name
      * also names the products inside it, so a store page reads like a catalogue
      * rather than nine copies of one line.
      */
     private const CATEGORIES = [
         'vendor01' => [
-            ['en' => 'Electronics', 'vi' => 'Điện tử'],
-            ['en' => 'Phones & Tablets', 'vi' => 'Điện thoại & Máy tính bảng'],
-            ['en' => 'Accessories', 'vi' => 'Phụ kiện'],
+            ['en' => 'Electronics', 'ja' => '家電', 'vi' => 'Điện tử'],
+            ['en' => 'Phones & Tablets', 'ja' => 'スマートフォン・タブレット', 'vi' => 'Điện thoại & Máy tính bảng'],
+            ['en' => 'Accessories', 'ja' => 'アクセサリー', 'vi' => 'Phụ kiện'],
         ],
         'vendor02' => [
-            ['en' => 'Clothing & Fashion', 'vi' => 'Thời trang & Quần áo'],
-            ['en' => 'Shoes', 'vi' => 'Giày dép'],
-            ['en' => 'Bags', 'vi' => 'Túi xách'],
+            ['en' => 'Clothing & Fashion', 'ja' => 'ファッション・衣料品', 'vi' => 'Thời trang & Quần áo'],
+            ['en' => 'Shoes', 'ja' => '靴', 'vi' => 'Giày dép'],
+            ['en' => 'Bags', 'ja' => 'バッグ', 'vi' => 'Túi xách'],
         ],
         'vendor03' => [
-            ['en' => 'Home & Garden', 'vi' => 'Nhà cửa & Vườn'],
-            ['en' => 'Kitchen', 'vi' => 'Nhà bếp'],
-            ['en' => 'Furniture', 'vi' => 'Nội thất'],
+            ['en' => 'Home & Garden', 'ja' => 'ホーム・ガーデン', 'vi' => 'Nhà cửa & Vườn'],
+            ['en' => 'Kitchen', 'ja' => 'キッチン', 'vi' => 'Nhà bếp'],
+            ['en' => 'Furniture', 'ja' => '家具', 'vi' => 'Nội thất'],
         ],
     ];
 
@@ -374,7 +374,7 @@ class SampleData extends Command
                 'updated_at' => Carbon::now(),
             ];
 
-            foreach (['en' => $store['en'], 'vi' => $store['vi']] as $lang => $name) {
+            foreach (['en' => $store['en'], 'ja' => $store['ja'], 'vi' => $store['vi']] as $lang => $name) {
                 $descriptions[] = [
                     'store_id' => $storeId,
                     'lang' => $lang,
@@ -441,7 +441,7 @@ class SampleData extends Command
     }
 
     /**
-     * Three categories per store, in both languages.
+     * Three categories per store, in every sample language.
      *
      * @return void
      */
@@ -560,6 +560,14 @@ class SampleData extends Command
                     ];
                     $descriptions[] = [
                         'product_id' => $productId,
+                        'lang' => 'ja',
+                        'name' => $store['ja'].'の'.$titles['ja'].' '.$inCategory,
+                        'keyword' => 'sample, product',
+                        'description' => $store['ja'].'が販売するサンプル商品です。',
+                        'content' => '<p>'.$store['ja'].'が販売するサンプル商品です。</p>',
+                    ];
+                    $descriptions[] = [
+                        'product_id' => $productId,
                         'lang' => 'vi',
                         'name' => $titles['vi'].' '.$inCategory.' của '.$store['vi'],
                         'keyword' => 'sample, product',
@@ -631,7 +639,7 @@ class SampleData extends Command
     private function renameRootStore(): void
     {
         AdminStoreDescription::where('store_id', (string) GP247_STORE_ID_ROOT)
-            ->whereIn('lang', ['en', 'vi'])
+            ->whereIn('lang', ['en', 'ja', 'vi'])
             // WHY `name`, not `title`: see createStores().
             ->update(['name' => 'GP247 demo marketplace']);
     }

@@ -1056,8 +1056,42 @@ class AppConfig extends ExtensionConfigDefault
         self::seedPlanLanguage();
         self::seedPlanSelfServiceLanguage();
         self::pruneOrphanVendorCategoryLinks();
+        self::seedJapanese();
 
         event(self::SEED_EVENT);
+    }
+
+    /**
+     * Add the Japanese row for every language code this plugin ships in
+     * Locales/ja.php whose English row is already in the database.
+     *
+     * The position is copied from that English row, so rows seeded only on
+     * install (and rows of every seed group) are covered without a second list.
+     * insertOrIgnore keeps text a site owner edited; running again adds nothing.
+     *
+     * @return void
+     *
+     * @aidlc-story US-multi-vendor-pro-japanese-locale
+     * @aidlc-adr compat-foundation_locale-data-files
+     */
+    public static function seedJapanese(): void
+    {
+        $file = __DIR__.'/Locales/ja.php';
+        $texts = is_file($file) ? require $file : [];
+        if (!is_array($texts) || !$texts) {
+            return;
+        }
+        $positions = [];
+        foreach (array_chunk(array_keys($texts), 500) as $codes) {
+            $positions += Languages::where('location', 'en')->whereIn('code', $codes)->pluck('position', 'code')->all();
+        }
+        $rows = [];
+        foreach ($positions as $code => $position) {
+            $rows[] = ['code' => $code, 'text' => (string) $texts[$code], 'position' => $position, 'location' => 'ja'];
+        }
+        foreach (array_chunk($rows, 500) as $chunk) {
+            Languages::insertOrIgnore($chunk);
+        }
     }
 
     /**

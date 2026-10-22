@@ -1,4 +1,4 @@
-> 🌐 **Language:** [🇻🇳 Tiếng Việt](./README_vi.md) · 🇬🇧 English (current)
+> 🌐 **Language:** [🇻🇳 Tiếng Việt](./README_vi.md) · 🇬🇧 English (current) · [🇯🇵 日本語](./README_ja.md)
 
 # MultiVendor — Multi-vendor marketplace for S-Cart (Free) · MultiVendorPro (Pro)
 
@@ -164,4 +164,4 @@ php artisan gp247:ext-install --type=plugin --key=MultiVendor
 
 ---
 
-<sub>📅 **Last updated:** 2026-09-25 · ✍️ **Author:** GP247</sub>
+<sub>📅 **Last updated:** 2026-10-22 · ✍️ **Author:** GP247</sub>
