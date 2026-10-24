@@ -10,9 +10,9 @@ use Illuminate\Contracts\View\View;
  * the core WebsiteInfo screen wholesale so the layout matches the core admin
  * store-settings screen exactly (Pha 2 L1 "inherit core layout" migration, the
  * final consistency fix). Inheriting the concrete core component gives the vendor
- * the same inline-edit machinery (mount/loadStore, updatedStore live persist,
- * per-language descriptions via updatedDesc) for free, and re-points only the
- * seams that differ for the marketplace vendor area:
+ * the same edit machinery (mount/loadStore, the explicit save() of store fields +
+ * per-language descriptions) for free, and re-points only the seams that differ
+ * for the marketplace vendor area:
  *
  *   1. Authorization — the vendor area authenticates against the `vendor` guard
  *      and is gated by the route middleware (vendor + checkVendorActive +
@@ -28,7 +28,7 @@ use Illuminate\Contracts\View\View;
  *      fields and the per-language descriptions. currency / language / template /
  *      domain / code are platform-owned and must be neither rendered nor writable
  *      (single-domain marketplace model). The write allow-list is enforced in
- *      updatedStore() below and the forbidden rows are dropped from the vendor
+ *      writableStoreFields() below and the forbidden rows are dropped from the vendor
  *      blade; the destructive template switch is blocked server-side too.
  *   4. Layout — render() mirrors the parent but points at the vendor blade and the
  *      plugin's vendor shell (ADR-007, rule ui-tailadmin P3).
@@ -76,26 +76,18 @@ class VendorStoreInfoForm extends WebsiteInfo
     }
 
     /**
-     * Persist a scalar store field the moment it changes — but ONLY for the vendor
-     * allow-list. This is the enforcement point of the security boundary: any key
-     * outside media + contact (currency / language / template / domain / code) is
-     * hard-rejected BEFORE the parent runs, so the parent's domain and destructive
-     * template branches are never reachable from the vendor screen even if the
-     * payload were forged (the client can submit any store.<key>).
+     * Narrow the parent's Save allow-list to media + contact. This is the
+     * enforcement point of the security boundary: save() writes ONLY these keys,
+     * so currency / language / template / domain / code are never written and the
+     * parent's domain and destructive template branches are unreachable from the
+     * vendor screen even if the payload were forged (the client can submit any
+     * store.<key>).
      *
-     * @param mixed  $value
-     * @param string $key   The changed `store.<key>` segment.
-     * @return void
+     * @return string[]
      */
-    public function updatedStore($value, string $key): void
+    protected function writableStoreFields(): array
     {
-        // WHY: platform-owned fields (currency/language/template/domain/code) must
-        // never be writable by a vendor in the single-domain marketplace model.
-        if (!in_array($key, self::VENDOR_WRITABLE_FIELDS, true)) {
-            return;
-        }
-
-        parent::updatedStore($value, $key);
+        return self::VENDOR_WRITABLE_FIELDS;
     }
 
     /**

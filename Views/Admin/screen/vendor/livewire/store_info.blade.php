@@ -1,15 +1,17 @@
 {{--
     Vendor store-info screen — copies the core WebsiteInfo (store_info) layout so the
     vendor screen looks identical to the core admin store-settings screen: a left
-    definition-table of the vendor's own store fields (media + contact details, live
-    inline edit) and a right table of multilingual descriptions (name/keyword/
+    definition-table of the vendor's own store fields (media + contact details) and a
+    right table of multilingual descriptions (name/keyword/
     description per active language). Bordered, striped two-column layout.
 
     SECURITY — this is the marketplace vendor variant: currency / language / template
     / domain / code are platform-owned and are NOT rendered here (the rows are dropped
     outright, not merely fed empty options), and the store Active / maintenance toggle
     is removed (decision Q3-A: a vendor has no maintenance control). The write side is
-    enforced independently in VendorStoreInfoForm::updatedStore().
+    enforced independently in VendorStoreInfoForm::writableStoreFields(). Edits persist
+    only via the Save button (form submit → inherited save()), never on change/blur/
+    Enter — IME users commit compositions with Enter.
 
     @aidlc-unit multi-vendor-pro
     @aidlc-story US-multi-vendor-pro-vendor-admin-livewire
@@ -52,6 +54,9 @@
     {{-- WHY lg: (not core's xl:): with the admin sidebar the content area is usually
          < 1280px, so xl:grid-cols-2 stayed one column; lg: gives the two-panel
          layout at ≥1024px, consistent with the category screen. --}}
+    <form wire:submit="save" x-data
+          x-on:keydown.enter="if ($event.target.tagName === 'INPUT') $event.preventDefault()"
+          class="space-y-6">
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {{-- Left: store fields (media + contact only) --}}
         <div class="overflow-hidden rounded-xl border border-gray-200 shadow-sm dark:border-gray-700">
@@ -67,13 +72,13 @@
                             <td class="{{ $valueCell }}">
                                 @switch($row['type'])
                                     @case('media')
-                                        <x-gp247::media-input :name="$field" type="logo" wire:model.live="store.{{ $field }}" :value="$store[$field] ?? null" data-testid="multi-vendor-pro-store-info-{{ $field }}" />
+                                        <x-gp247::media-input :name="$field" type="logo" wire:model="store.{{ $field }}" :value="$store[$field] ?? null" data-testid="multi-vendor-pro-store-info-{{ $field }}" />
                                         @break
                                     @case('textarea')
-                                        <textarea wire:model.live.blur="store.{{ $field }}" rows="2" class="{{ $input }}" data-testid="multi-vendor-pro-store-info-{{ $field }}"></textarea>
+                                        <textarea wire:model="store.{{ $field }}" rows="2" class="{{ $input }}" data-testid="multi-vendor-pro-store-info-{{ $field }}"></textarea>
                                         @break
                                     @default
-                                        <input type="text" wire:model.live.blur="store.{{ $field }}" class="{{ $input }}" data-testid="multi-vendor-pro-store-info-{{ $field }}">
+                                        <input type="text" wire:model="store.{{ $field }}" class="{{ $input }}" data-testid="multi-vendor-pro-store-info-{{ $field }}">
                                 @endswitch
                             </td>
                         </tr>
@@ -100,9 +105,9 @@
                                     {{ gp247_language_render($descLabels[$df]) }}
                                 </label>
                                 @if ($control === 'textarea')
-                                    <textarea wire:model.live.blur="desc.{{ $code }}.{{ $df }}" rows="4" class="{{ $input }}" data-testid="multi-vendor-pro-store-info-desc-{{ $df }}"></textarea>
+                                    <textarea wire:model="desc.{{ $code }}.{{ $df }}" rows="4" class="{{ $input }}" data-testid="multi-vendor-pro-store-info-desc-{{ $df }}"></textarea>
                                 @else
-                                    <input type="text" wire:model.live.blur="desc.{{ $code }}.{{ $df }}" class="{{ $input }}" data-testid="multi-vendor-pro-store-info-desc-{{ $df }}">
+                                    <input type="text" wire:model="desc.{{ $code }}.{{ $df }}" class="{{ $input }}" data-testid="multi-vendor-pro-store-info-desc-{{ $df }}">
                                 @endif
                             </div>
                         @endforeach
@@ -111,4 +116,11 @@
             </x-gp247::tabs>
         </div>
     </div>
+
+    <div class="flex items-center justify-end gap-2">
+        <x-gp247::button type="submit" wire:loading.attr="disabled" data-testid="multi-vendor-pro-store-info-save">
+            <i class="fas fa-save"></i> {{ gp247_language_render('admin.save') }}
+        </x-gp247::button>
+    </div>
+    </form>
 </div>
