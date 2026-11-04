@@ -5,6 +5,10 @@
 ## Giới thiệu
 Trang này ghi các phiên bản của plugin MultiVendor và những thay đổi đáng chú ý trong mỗi bản, để chủ sàn biết mình đang dùng bản nào và nâng cấp thì được gì. Tính năng chi tiết xem [tài liệu Tổng quan sàn](https://gp247.net/vi/docs/plugin-multi-vendor/multi-vendor-overview.html) trên gp247.net.
 
+## Phiên bản 1.1.2
+- **Form 2 cột theo kiểu chung của trang quản trị.** Ở màn **Vendor** của sàn và các màn **Sản phẩm**, **Banner**, **Danh mục**, **Nhà cung cấp** của vendor: khi đang sửa, đầu form có nút **+ Tạo mới** để quay về form trống (danh sách giữ nguyên trang, địa chỉ trang bỏ phần đang sửa); cuối form chỉ còn nút Lưu / Cập nhật — bỏ Reset và Huỷ.
+- Cần GP247 Core 3.10 trở lên (`requireCore` 3.10).
+
 ## Phiên bản 1.0.8
 - **Cập nhật plugin tự bù lại phần dữ liệu còn thiếu.** Nếu bảng đơn hàng của cửa hàng được tạo lại sau khi đã cài MultiVendor (ví dụ cài lại cửa hàng), cột ngày hoàn tất đơn của plugin bị mất và mọi đơn chuyển sang "Hoàn tất" đều báo lỗi. Nay chỉ cần chạy `php artisan gp247:ext-update --type=plugin --key=MultiVendor` (hoặc cập nhật plugin trong trang quản trị) là cột và các bảng của plugin được tạo lại; dữ liệu đang có không bị động tới.
 

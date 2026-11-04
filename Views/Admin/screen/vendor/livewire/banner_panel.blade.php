@@ -29,12 +29,7 @@
                     ? gp247_language_render('action.edit')
                     : gp247_language_render('admin.banner.add_new') }}
             </h3>
-            @if ($editingId)
-                <x-gp247::button size="sm" variant="secondary" wire:click="resetForm"
-                    data-testid="multi-vendor-pro-banner-cancel">
-                    <i class="fas fa-plus"></i> {{ gp247_language_render('admin.add_new') }}
-                </x-gp247::button>
-            @endif
+            <x-gp247::form-new-button :editing="$editingId" data-testid="multi-vendor-pro-banner-form-new" />
         </x-slot:header>
 
         <form wire:submit="save" class="space-y-5">

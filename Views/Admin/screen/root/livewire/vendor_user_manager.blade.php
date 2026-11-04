@@ -16,6 +16,9 @@
 
     {{-- Left: add / edit form --}}
     <x-gp247::card :title="gp247_language_render($editingId ? 'action.edit' : 'multi_vendor.vendor_add')">
+        <x-slot:actions>
+            <x-gp247::form-new-button :editing="$editingId" data-testid="multi-vendor-pro-user-form-new" />
+        </x-slot:actions>
         <form wire:submit="save" class="space-y-4">
 
             @if ($errors->any())
@@ -95,11 +98,7 @@
                 :label="gp247_language_render('multi_vendor.status')"
                 wire:model="form.status" />
 
-            <div class="flex items-center justify-between border-t border-gray-200 pt-4 dark:border-gray-700">
-                <x-gp247::button variant="secondary" wire:click="cancelEdit" type="button"
-                    data-testid="multi-vendor-pro-user-cancel">
-                    {{ gp247_language_render($editingId ? 'admin.cancel' : 'action.reset') }}
-                </x-gp247::button>
+            <div class="flex items-center justify-end border-t border-gray-200 pt-4 dark:border-gray-700">
                 <x-gp247::button type="submit" variant="primary" wire:loading.attr="disabled"
                     data-testid="multi-vendor-pro-user-submit">
                     <i class="fas fa-save"></i>
