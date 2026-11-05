@@ -106,4 +106,38 @@ class ResetPasswordController extends RootVendorController
     {
         return Auth::guard('vendor');
     }
+
+    /**
+     * Reset rules: the new password follows the vendor password policy — the same rule
+     * as sign-up (Laravel's default reset rule would differ from it).
+     *
+     * @return array<string, mixed>
+     *
+     * @aidlc-unit multi-vendor-pro
+     * @aidlc-story US-multi-vendor-pro-vendor-password-policy
+     * @aidlc-adr admin-shell_password-policy-registry
+     */
+    protected function rules()
+    {
+        return [
+            'token'    => 'required',
+            'email'    => 'required|email',
+            'password' => array_merge(\App\GP247\Plugins\MultiVendor\Support\VendorPasswordPolicy::rules(true), ['confirmed']),
+        ];
+    }
+
+    /**
+     * Store the new password through the shared hash function.
+     *
+     * @param \Illuminate\Contracts\Auth\CanResetPassword $user
+     * @param string                                      $password
+     * @return void
+     *
+     * @aidlc-unit multi-vendor-pro
+     * @aidlc-story US-multi-vendor-pro-vendor-password-policy
+     */
+    protected function setUserPassword($user, $password)
+    {
+        $user->password = gp247_password_hash($password);
+    }
 }

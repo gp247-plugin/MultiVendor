@@ -407,7 +407,7 @@ class SampleData extends Command
                 'first_name' => $store['en'],
                 'last_name' => 'Owner',
                 'email' => $this->loginOf($store['code']),
-                'password' => bcrypt(self::SAMPLE_PASSWORD),
+                'password' => gp247_password_hash(self::SAMPLE_PASSWORD),
                 'country' => 'VN',
                 'status' => 1,
                 'created_at' => Carbon::now(),

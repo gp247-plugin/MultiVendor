@@ -39,6 +39,14 @@
         // A period payout can be paid through the core's payment requests.
         \App\GP247\Plugins\MultiVendor\Payout\VendorPayoutPurpose::register();
 
+        // Vendors are one account group of the core Password policy screen; every vendor
+        // password path reads its rule from there. Skipped on a core without the seam.
+        if (class_exists(\GP247\Core\Support\Password\PasswordPolicyRegistry::class)) {
+            \GP247\Core\Support\Password\PasswordPolicyRegistry::register(
+                \App\GP247\Plugins\MultiVendor\Support\VendorPasswordPolicy::audience()
+            );
+        }
+
         // WHY: store the i18n KEY, not the raw token — the "Layout block" admin
         // screen renders each option through gp247_language_render(), so a raw
         // token showed up untranslated as "vendor_home - vendor_home".

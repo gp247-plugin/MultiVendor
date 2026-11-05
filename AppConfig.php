@@ -369,6 +369,15 @@ class AppConfig extends ExtensionConfigDefault
                     // deploy, and leaves no orphan file behind when the plugin goes.
                     // Modification 20260922T205500, ADR
                     // frontend-template-dev_plugin-layout-block-views.
+                    // A new marketplace starts with the vendor password defaults
+                    // (12–64); converge() below only fills rows still missing, so a
+                    // site that kept its rows, or an adopted 1.x site, keeps its own.
+                    if (!$adopted) {
+                        self::seedConfigRows(\App\GP247\Plugins\MultiVendor\Support\VendorPasswordPolicy::configRows(
+                            \App\GP247\Plugins\MultiVendor\Support\VendorPasswordPolicy::DEFAULT_MIN,
+                            \App\GP247\Plugins\MultiVendor\Support\VendorPasswordPolicy::DEFAULT_MAX
+                        ));
+                    }
                     // Same convergence list update() runs. A fresh install and a
                     // reinstall must end in the same place; see converge().
                     self::converge();
@@ -1056,9 +1065,32 @@ class AppConfig extends ExtensionConfigDefault
         self::seedPlanLanguage();
         self::seedPlanSelfServiceLanguage();
         self::pruneOrphanVendorCategoryLinks();
+        self::seedPasswordPolicy();
         self::seedJapanese();
 
         event(self::SEED_EVENT);
+    }
+
+    /**
+     * Put the vendor block of the core Password policy screen in place: the six
+     * site-wide rows that are missing, with the values the plugin enforced before the
+     * screen existed (6 minimum, no maximum → 72), and the block label. A row that is
+     * already there — a fresh install's 12–64, or a value the owner changed — is kept.
+     * Re-entrant; runs on every convergence.
+     *
+     * @return void
+     *
+     * @aidlc-unit multi-vendor-pro
+     * @aidlc-story US-multi-vendor-pro-vendor-password-policy, US-multi-vendor-pro-install-convergence
+     * @aidlc-adr admin-shell_password-policy-registry
+     */
+    public static function seedPasswordPolicy(): void
+    {
+        self::seedConfigRows(\App\GP247\Plugins\MultiVendor\Support\VendorPasswordPolicy::configRows(
+            \App\GP247\Plugins\MultiVendor\Support\VendorPasswordPolicy::LEGACY_MIN,
+            \App\GP247\Plugins\MultiVendor\Support\VendorPasswordPolicy::LEGACY_MAX
+        ));
+        Languages::insertOrIgnore(\App\GP247\Plugins\MultiVendor\Support\VendorPasswordPolicy::languageRows());
     }
 
     /**

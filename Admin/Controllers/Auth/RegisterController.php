@@ -78,7 +78,7 @@ class RegisterController extends RootVendorController
         $validate = [
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
-            'password' => 'required|string|confirmed|min:6',
+            'password' => array_merge(\App\GP247\Plugins\MultiVendor\Support\VendorPasswordPolicy::rules(true), ['confirmed']),
             'email' => 'required|string|email|max:255|unique:"'.AdminVendorUser::class.'",email',
             'store_code' => 'required|string|max:20|unique:"'.AdminStore::class.'",code',
         ];
@@ -118,7 +118,7 @@ class RegisterController extends RootVendorController
                 ->withErrors($validator)
                 ->withInput();
         }
-        $data['password'] = bcrypt($data['password']);
+        $data['password'] = gp247_password_hash($data['password']);
         $data['email'] = strtolower($data['email']);
 
         $dataStore = [

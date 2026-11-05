@@ -416,4 +416,5 @@ return [
     'multi_vendor.payment.life_time' => '累計売上',
     'multi_vendor.payment.payout' => '出金',
     'multi_vendor.payment.remaining' => '残額',
+    'admin.password_policy.audience_vendor' => '出店者',
 ];

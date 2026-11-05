@@ -126,7 +126,7 @@ class LoginController extends RootVendorController
         $validate = [
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
-            'password' => 'nullable|string|min:6',
+            'password' => \App\GP247\Plugins\MultiVendor\Support\VendorPasswordPolicy::rules(false),
             'email' => 'nullable|string|email|max:255|unique:"'.AdminVendorUser::class.'",email,'.$vendor['id'].',id',
         ];
         $validate['address1'] = 'nullable|string|max:100';
@@ -166,7 +166,7 @@ class LoginController extends RootVendorController
         }
 
         if (!empty($data['password'])) {
-            $data['password'] = bcrypt($data['password']);
+            $data['password'] = gp247_password_hash($data['password']);
         } else {
             unset($data['password']);
         }

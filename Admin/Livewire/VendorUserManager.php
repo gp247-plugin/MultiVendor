@@ -18,7 +18,7 @@ use Illuminate\Validation\Rule;
  * (add/edit form left, live list right) on the shared core ResourcePanel base
  * (ADR-005, ui-tailadmin P1). Livewire port of the legacy
  * AdminRootVendorUserController (controller + Blade), preserving its business
- * logic verbatim: bcrypt password, lowercase + unique email, status 0/1, the
+ * logic verbatim: hashed password, lowercase + unique email, status 0/1, the
  * store_id assignment (vendor's own store, never the ROOT store id 1), and the
  * Creating/Created/Deleting/Deleted vendor-user events.
  *
@@ -53,7 +53,7 @@ class VendorUserManager extends ResourcePanel
     protected bool $keepStateOnSave = true;
 
     /**
-     * The password must reach bcrypt() as the RAW value the vendor will type at
+     * The password must reach gp247_password_hash() as the RAW value the vendor will type at
      * login; gp247_clean() htmlspecialchars-escapes its input, which would hash a
      * mangled string. Excluding it here mirrors the controller's
      * gp247_clean($data, ['password'], true).
@@ -182,8 +182,8 @@ class VendorUserManager extends ResourcePanel
             'form.address2'   => ['nullable', 'string', 'max:100'],
             'form.country'    => ['nullable', 'string', 'min:2', Rule::in($countryCodes)],
             'form.password'   => $this->editingId !== null
-                ? ['nullable', 'string', 'min:6']
-                : ['required', 'string', 'min:6'],
+                ? \App\GP247\Plugins\MultiVendor\Support\VendorPasswordPolicy::rules(false)
+                : \App\GP247\Plugins\MultiVendor\Support\VendorPasswordPolicy::rules(true),
             'form.store_id'   => ['required', Rule::in($storeIds)],
         ];
     }
@@ -211,7 +211,7 @@ class VendorUserManager extends ResourcePanel
     }
 
     /**
-     * Persist the sanitised form. bcrypt the password only when supplied (blank
+     * Persist the sanitised form. Hash the password only when supplied (blank
      * on edit keeps the current one), lowercase the email, coerce status to 0/1,
      * and dispatch the Creating/Created events on insert — controller parity.
      *
@@ -234,11 +234,11 @@ class VendorUserManager extends ResourcePanel
         ];
 
         // WHY: password is excluded from gp247_clean (richFields) so it reaches
-        // bcrypt raw. Only hash + write it when the admin actually entered one;
+        // hash raw. Only hash + write it when the admin actually entered one;
         // a blank field on edit leaves the stored hash untouched.
         $password = (string) ($data['password'] ?? '');
         if ($password !== '') {
-            $attributes['password'] = bcrypt($password);
+            $attributes['password'] = gp247_password_hash($password);
         }
 
         if ($this->editingId !== null) {
