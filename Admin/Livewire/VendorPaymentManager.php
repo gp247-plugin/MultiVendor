@@ -316,8 +316,8 @@ class VendorPaymentManager extends GP247AdminComponent
         $dataAmount = [];
         if ($this->editId === null) {
             $query = new AdminMoneyProcess;
-            if ($this->keyword !== '') {
-                $query = $query->where('store_id', gp247_clean($this->keyword));
+            if (($keyword = $this->trimmedKeyword()) !== '') {
+                $query = $query->where('store_id', gp247_clean($keyword));
             }
             $payments = $query->orderBy('date_process', 'desc')->paginate(20);
 
@@ -354,5 +354,21 @@ class VendorPaymentManager extends GP247AdminComponent
                 ? gp247_language_render('multi_vendor.vendor_payment')
                 : gp247_language_render('action.edit'),
         ]);
+    }
+
+    /**
+     * The search keyword without whitespace at both ends (full-width and
+     * non-breaking spaces included); the box value itself is left as typed.
+     *
+     * WHY: gp247_search_keyword() ships with newer cores; fall back to trim() so
+     * the plugin keeps working on an older core.
+     *
+     * @return string
+     *
+     * @aidlc-story US-admin-shell-list-search-trim
+     */
+    private function trimmedKeyword(): string
+    {
+        return function_exists('gp247_search_keyword') ? gp247_search_keyword($this->keyword) : trim($this->keyword);
     }
 }
