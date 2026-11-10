@@ -97,9 +97,14 @@ class VendorStoreInfoForm extends WebsiteInfo
      * blocks + banners on the vendor's store. Template is platform-owned, so this is
      * a hard no-op regardless of any client-set pendingTemplate.
      *
+     * WHY the unused parameter: core 3.11 added `$skipPreChange` to the parent, and
+     * PHP requires an override to accept every parameter the parent accepts. A
+     * default value keeps it compatible with older cores (which pass nothing).
+     *
+     * @param bool $skipPreChange Ignored — the switch is always blocked here.
      * @return void
      */
-    public function confirmTemplateSwitch(): void
+    public function confirmTemplateSwitch(bool $skipPreChange = false): void
     {
     }
 

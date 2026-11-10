@@ -5,6 +5,12 @@
 ## Giới thiệu
 Trang này ghi các phiên bản của plugin MultiVendor và những thay đổi đáng chú ý trong mỗi bản, để chủ sàn biết mình đang dùng bản nào và nâng cấp thì được gì. Tính năng chi tiết xem [tài liệu Tổng quan sàn](https://gp247.net/vi/docs/plugin-multi-vendor/multi-vendor-overview.html) trên gp247.net.
 
+## Phiên bản 1.1.3
+- **Chạy được với GP247 Core 3.11.** Trên Core 3.11, cài hoặc nạp plugin làm mọi lệnh `php artisan` dừng với lỗi nghiêm trọng về `VendorStoreInfoForm::confirmTemplateSwitch()`. Màn thông tin cửa hàng của vendor nay khớp với màn của core mà nó kế thừa; vendor vẫn không đổi được template của cửa hàng.
+- **Mật khẩu vendor theo khối Vendor của màn Chính sách mật khẩu.** Đăng ký vendor, hồ sơ, đặt lại mật khẩu qua email và màn **Người dùng vendor** của sàn đều kiểm theo quy tắc đặt ở đó. Sàn mới bắt đầu với 12–64 ký tự; site đang chạy plugin giữ đúng mức đã áp trước đây (tối thiểu 6 ký tự), và giá trị bạn đã sửa không bao giờ bị ghi đè.
+- **Tìm kiếm ở màn Thanh toán cho vendor bỏ qua khoảng trắng quanh mã cửa hàng**, nên dán mã có dư khoảng trắng vẫn tìm ra dòng.
+- Cần GP247 Core 3.11 trở lên (`requireCore` 3.11).
+
 ## Phiên bản 1.1.2
 - **Form 2 cột theo kiểu chung của trang quản trị.** Ở màn **Vendor** của sàn và các màn **Sản phẩm**, **Banner**, **Danh mục**, **Nhà cung cấp** của vendor: khi đang sửa, đầu form có nút **+ Tạo mới** để quay về form trống (danh sách giữ nguyên trang, địa chỉ trang bỏ phần đang sửa); cuối form chỉ còn nút Lưu / Cập nhật — bỏ Reset và Huỷ.
 - Cần GP247 Core 3.10 trở lên (`requireCore` 3.10).
