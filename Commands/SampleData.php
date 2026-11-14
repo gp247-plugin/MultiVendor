@@ -92,14 +92,14 @@ class SampleData extends Command
 
     /**
      * Hosted sample photos shared with gp247:shop-sample: products use product-N.png,
-     * categories use blog-N.jpg.
+     * categories use cate-N.png.
      */
-    private const PRODUCT_IMAGE_BASE = 'https://static.gp247.net/file/s-cart/what/product-';
+    private const PRODUCT_IMAGE_BASE = 'https://static.gp247.net/file/s-cart/product/product-';
     private const PRODUCT_IMAGE_COUNT = 36;
     private const PRODUCT_IMAGE_OFFSET = 18;
-    private const CATEGORY_IMAGE_BASE = 'https://static.gp247.net/file/s-cart/where/blog-';
+    private const CATEGORY_IMAGE_BASE = 'https://static.gp247.net/file/s-cart/cate/cate-';
     private const CATEGORY_IMAGE_COUNT = 10;
-    private const CATEGORY_IMAGE_OFFSET = 2;
+    private const CATEGORY_IMAGE_OFFSET = 6;
 
     /**
      * How many product / category photos this run has handed out.
@@ -636,11 +636,11 @@ class SampleData extends Command
     }
 
     /**
-     * Next hosted category photo (blog-1.jpg … blog-10.jpg, the set gp247:shop-sample uses for
-     * its categories, brands and suppliers).
+     * Next hosted category photo (cate-1.png … cate-10.png, the set gp247:shop-sample uses for
+     * its categories).
      *
-     * WHY start at photo 3: gp247:shop-sample hands out 22 of them in rotation (1–10 twice,
-     * then 1 and 2), so the vendor categories carry on the same rotation from photo 3 and
+     * WHY start at photo 7: gp247:shop-sample hands out 16 of them in rotation (1–10, then
+     * 1–6), so the vendor categories carry on the same rotation from photo 7 and
      * the use of every photo stays as even as possible across both samples.
      *
      * @return string
@@ -650,7 +650,7 @@ class SampleData extends Command
         $number = ($this->categoryImageCursor + self::CATEGORY_IMAGE_OFFSET) % self::CATEGORY_IMAGE_COUNT + 1;
         $this->categoryImageCursor++;
 
-        return self::CATEGORY_IMAGE_BASE.$number.'.jpg';
+        return self::CATEGORY_IMAGE_BASE.$number.'.png';
     }
 
     /**
