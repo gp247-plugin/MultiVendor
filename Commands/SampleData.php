@@ -91,6 +91,23 @@ class SampleData extends Command
     private const PRODUCTS_PER_CATEGORY = 3;
 
     /**
+     * Hosted sample photos shared with gp247:shop-sample: products use product-N.png,
+     * categories use blog-N.jpg.
+     */
+    private const PRODUCT_IMAGE_BASE = 'https://static.gp247.net/file/s-cart/what/product-';
+    private const PRODUCT_IMAGE_COUNT = 36;
+    private const PRODUCT_IMAGE_OFFSET = 18;
+    private const CATEGORY_IMAGE_BASE = 'https://static.gp247.net/file/s-cart/where/blog-';
+    private const CATEGORY_IMAGE_COUNT = 10;
+    private const CATEGORY_IMAGE_OFFSET = 2;
+
+    /**
+     * How many product / category photos this run has handed out.
+     */
+    private int $productImageCursor = 0;
+    private int $categoryImageCursor = 0;
+
+    /**
      * The three categories of each store, in every sample language. The category name
      * also names the products inside it, so a store page reads like a catalogue
      * rather than nine copies of one line.
@@ -458,7 +475,7 @@ class SampleData extends Command
                     'alias' => 'category-'.$store['code'].'-'.($index + 1),
                     'status' => 1,
                     'sort' => $index,
-                    'image' => $this->sampleImage($store['code'].'-'.($index + 1), 'category'),
+                    'image' => $this->nextCategoryImage(),
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
                 ];
@@ -520,7 +537,7 @@ class SampleData extends Command
                         'id' => $productId,
                         'sku' => 'SKU-'.strtoupper($suffix),
                         'alias' => 'sample-product-'.$suffix,
-                        'image' => $this->sampleImage($suffix),
+                        'image' => $this->nextProductImage(),
                         'supplier_id' => 'SUP-'.strtoupper($store['code']),
                         'store_id' => $storeId,
                         // A spread of prices rather than nine identical ones, so
@@ -598,21 +615,42 @@ class SampleData extends Command
     }
 
     /**
-     * Placeholder photo for a sample product.
+     * Next hosted product photo (product-1.png … product-36.png, the set gp247:shop-sample uses).
      *
-     * WHY a remote placeholder: this is the same source gp247:shop-sample uses
-     * for its own demo products, so a marketplace demo looks like the shop demo
-     * around it, and the plugin carries no stock photos of its own. It needs
-     * internet; offline, the card falls back to the theme's "no image" box and
-     * everything else still works.
+     * WHY the hosted set: a marketplace demo then looks like the shop demo around it, and
+     * the plugin carries no stock photos of its own. It needs internet; offline, the card
+     * falls back to the theme's "no image" box and everything else still works.
      *
-     * @param string $code
-     * @param string $kind Distinguishes the product photo from the category one.
+     * WHY start at photo 19: gp247:shop-sample hands its 54 products photos 1–36 in order and
+     * then 1–18 again, so 19–36 are the ones it uses least. Starting there and rotating keeps
+     * every photo at most three times on a site that has both samples — the fewest possible.
+     *
      * @return string
      */
-    private function sampleImage(string $code, string $kind = 'product'): string
+    private function nextProductImage(): string
     {
-        return 'https://picsum.photos/500/500?random='.$kind.'-'.(int) substr($code, -2);
+        $number = ($this->productImageCursor + self::PRODUCT_IMAGE_OFFSET) % self::PRODUCT_IMAGE_COUNT + 1;
+        $this->productImageCursor++;
+
+        return self::PRODUCT_IMAGE_BASE.$number.'.png';
+    }
+
+    /**
+     * Next hosted category photo (blog-1.jpg … blog-10.jpg, the set gp247:shop-sample uses for
+     * its categories, brands and suppliers).
+     *
+     * WHY start at photo 3: gp247:shop-sample hands out 22 of them in rotation (1–10 twice,
+     * then 1 and 2), so the vendor categories carry on the same rotation from photo 3 and
+     * the use of every photo stays as even as possible across both samples.
+     *
+     * @return string
+     */
+    private function nextCategoryImage(): string
+    {
+        $number = ($this->categoryImageCursor + self::CATEGORY_IMAGE_OFFSET) % self::CATEGORY_IMAGE_COUNT + 1;
+        $this->categoryImageCursor++;
+
+        return self::CATEGORY_IMAGE_BASE.$number.'.jpg';
     }
 
     /**
