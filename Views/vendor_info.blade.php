@@ -54,8 +54,10 @@
 
 <section class="card overflow-hidden mb-6" data-testid="multi-vendor-shop-header">
     {{-- Cover. A shop without one still gets a band of colour rather than a grey
-         gap, so the avatar always has something to sit against. --}}
-    <div class="relative" style="height: 240px; background: linear-gradient(120deg, #0f172a 0%, #0284c7 55%, #38bdf8 100%);" data-testid="multi-vendor-shop-cover">
+         gap, so the avatar always has something to sit against. The colour is the
+         active template's brand token (bg-brand-600) under a neutral shade: a
+         hardcoded hex painted the default template's blue on every other template. --}}
+    <div class="relative bg-brand-600" style="height: 240px; background-image: linear-gradient(120deg, rgba(15,23,42,.55) 0%, rgba(15,23,42,0) 70%);" data-testid="multi-vendor-shop-cover">
         @if ($coverImage !== '')
             @if (!empty($coverBanner->url))
                 <a href="{{ $coverBanner->url }}" target="{{ $coverBanner->target ?: '_self' }}" class="block w-full h-full">
@@ -200,13 +202,14 @@
 
     {{-- Tabs. The active one is marked by a bar that sits on the divider itself
          (hence the negative margin), so the panel below reads as belonging to the
-         selected tab rather than as a separate box. --}}
+         selected tab rather than as a separate box. The bar is currentColor, i.e.
+         the tab's text-brand-600, so it follows the active template's brand. --}}
     <nav class="flex flex-wrap border-t border-ink-100 px-2" data-testid="multi-vendor-shop-tabs">
         @foreach ($tabs as $key => $label)
             @php($isActive = $tab === $key)
             <a href="{{ $shopUrl }}{{ $key === 'products' ? '' : '?tab='.$key }}"
                 class="inline-flex items-center gap-2 px-4 py-3 text-sm font-semibold transition {{ $isActive ? 'text-brand-600' : 'text-ink-500 hover:text-ink-900 hover:bg-ink-50' }}"
-                style="border-bottom: 3px solid {{ $isActive ? '#0284c7' : 'transparent' }}; margin-bottom: -1px;"
+                style="border-bottom: 3px solid {{ $isActive ? 'currentColor' : 'transparent' }}; margin-bottom: -1px;"
                 @if ($isActive) aria-current="page" @endif
                 data-testid="multi-vendor-shop-tab-{{ $key }}">{{ $label }}
                 @if (!empty($tabCounts[$key]))

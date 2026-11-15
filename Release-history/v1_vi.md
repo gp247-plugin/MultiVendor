@@ -5,6 +5,9 @@
 ## Giới thiệu
 Trang này ghi các phiên bản của plugin MultiVendor và những thay đổi đáng chú ý trong mỗi bản, để chủ sàn biết mình đang dùng bản nào và nâng cấp thì được gì. Tính năng chi tiết xem [tài liệu Tổng quan sàn](https://gp247.net/vi/docs/plugin-multi-vendor/multi-vendor-overview.html) trên gp247.net.
 
+## Phiên bản 1.1.4
+- **Đầu trang gian hàng lấy màu theo template storefront đang dùng.** Dải ảnh bìa và gạch dưới tab đang mở trước đây dùng màu xanh cố định của template mặc định, lệch tông với mọi giao diện khác; nay theo màu thương hiệu của template đang dùng. Bố cục và nội dung không đổi.
+
 ## Phiên bản 1.1.3
 - **Chạy được với GP247 Core 3.11.** Trên Core 3.11, cài hoặc nạp plugin làm mọi lệnh `php artisan` dừng với lỗi nghiêm trọng về `VendorStoreInfoForm::confirmTemplateSwitch()`. Màn thông tin cửa hàng của vendor nay khớp với màn của core mà nó kế thừa; vendor vẫn không đổi được template của cửa hàng.
 - **Mật khẩu vendor theo khối Vendor của màn Chính sách mật khẩu.** Đăng ký vendor, hồ sơ, đặt lại mật khẩu qua email và màn **Người dùng vendor** của sàn đều kiểm theo quy tắc đặt ở đó. Sàn mới bắt đầu với 12–64 ký tự; site đang chạy plugin giữ đúng mức đã áp trước đây (tối thiểu 6 ký tự), và giá trị bạn đã sửa không bao giờ bị ghi đè.
