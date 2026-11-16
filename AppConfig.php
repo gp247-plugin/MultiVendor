@@ -571,25 +571,42 @@ class AppConfig extends ExtensionConfigDefault
      * key now means "Pro is on" and must stay.
      *
      * Plugin-owned tables (vendor_*) are never touched.
+     *
+     * Never renamed: core's own record of an extension's installed version
+     * (code `extension_version`, e.g. `MultiVendorPro_installed_version` of the unlock
+     * plugin), and any legacy row whose new name already exists — renaming either
+     * would hit the (key, store_id) / (code, location) unique index and abort the update.
      */
     public static function migrateLegacyIdentity(): bool
     {
-        $legacyRows = AdminConfig::where('key', 'like', 'MultiVendorPro\_%')->count();
+        $legacyConfig = fn () => AdminConfig::where('key', 'like', 'MultiVendorPro\_%')
+            ->where('code', '!=', 'extension_version');
+        $legacyRows = $legacyConfig()->count();
         $legacyMenu = AdminMenu::where('uri', 'like', 'admin::MultiVendorPro/%')->count();
         $tables = Schema::hasTable('vendor_user');
         if ($legacyRows === 0 && $legacyMenu === 0) {
             return $tables && AdminConfig::where('key', 'MultiVendor')->doesntExist();
         }
 
-        AdminConfig::where('key', 'like', 'MultiVendorPro\_%')->get()->each(function ($row) {
-            $row->key = 'MultiVendor_'.substr($row->key, strlen('MultiVendorPro_'));
+        $legacyConfig()->get()->each(function ($row) {
+            $newKey = 'MultiVendor_'.substr($row->key, strlen('MultiVendorPro_'));
+            // WHY: a current value already exists under the new name — it wins; the
+            // legacy row stays as it is rather than failing the whole update.
+            if (AdminConfig::where('key', $newKey)->where('store_id', $row->store_id)->exists()) {
+                return;
+            }
+            $row->key = $newKey;
             if (is_string($row->detail) && str_starts_with($row->detail, 'multi_vendor.MultiVendorPro_')) {
                 $row->detail = 'multi_vendor.MultiVendor_'.substr($row->detail, strlen('multi_vendor.MultiVendorPro_'));
             }
             $row->save();
         });
         Languages::where('code', 'like', 'multi\_vendor.MultiVendorPro\_%')->get()->each(function ($row) {
-            $row->code = 'multi_vendor.MultiVendor_'.substr($row->code, strlen('multi_vendor.MultiVendorPro_'));
+            $newCode = 'multi_vendor.MultiVendor_'.substr($row->code, strlen('multi_vendor.MultiVendorPro_'));
+            if (Languages::where('code', $newCode)->where('location', $row->location)->exists()) {
+                return;
+            }
+            $row->code = $newCode;
             $row->save();
         });
         AdminMenu::where('uri', 'like', 'admin::MultiVendorPro/%')->get()->each(function ($row) {
@@ -607,6 +624,9 @@ class AppConfig extends ExtensionConfigDefault
         }
         if (!$isUnlock) {
             AdminConfig::where('key', 'MultiVendorPro')->where('group', 'Plugins')->delete();
+            if (function_exists('gp247_extension_forget_installed_version')) {
+                gp247_extension_forget_installed_version('Plugins', 'MultiVendorPro');
+            }
         }
 
         return true;

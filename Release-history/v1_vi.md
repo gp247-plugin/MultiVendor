@@ -5,6 +5,9 @@
 ## Giới thiệu
 Trang này ghi các phiên bản của plugin MultiVendor và những thay đổi đáng chú ý trong mỗi bản, để chủ sàn biết mình đang dùng bản nào và nâng cấp thì được gì. Tính năng chi tiết xem [tài liệu Tổng quan sàn](https://gp247.net/vi/docs/plugin-multi-vendor/multi-vendor-overview.html) trên gp247.net.
 
+## Phiên bản 1.1.5
+- **Cập nhật plugin chạy lại được trên sàn đang dùng bản Pro.** Lần cập nhật dừng với lỗi "Integrity constraint violation: 1062 Duplicate entry 'MultiVendor_installed_version-0'" và file được khôi phục từ bản sao lưu, nên site vẫn ở bản cũ. Sau khi có 1.1.5, bấm cập nhật lại là được; cấu hình và dữ liệu của bạn không đổi.
+
 ## Phiên bản 1.1.4
 - **Đầu trang gian hàng lấy màu theo template storefront đang dùng.** Dải ảnh bìa và gạch dưới tab đang mở trước đây dùng màu xanh cố định của template mặc định, lệch tông với mọi giao diện khác; nay theo màu thương hiệu của template đang dùng. Bố cục và nội dung không đổi.
 
