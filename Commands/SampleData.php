@@ -27,9 +27,10 @@ use Illuminate\Support\Facades\Schema;
 /**
  * Sample marketplace data for a demo or test site.
  *
- * Creates three vendor stores; each gets a login, a supplier, three categories
- * and nine products (three per category) - enough to open a store page, filter
- * it by category, sign in as a vendor and buy from two vendors in one cart.
+ * Creates three electronics vendor stores; each gets a login, a supplier, three
+ * categories and nine products (three per category, each shown with the hosted
+ * photo of that device) - enough to open a store page, filter it by category,
+ * sign in as a vendor and buy from two vendors in one cart.
  *
  * Three stores, not more: that is the Free edition's vendor quota
  * (Tier::FREE_VENDOR_QUOTA), and a command that seeds past the quota would put
@@ -87,46 +88,110 @@ class SampleData extends Command
     /** Password of every sample vendor login. Test sites only. */
     private const SAMPLE_PASSWORD = '123456';
 
-    /** Products seeded in each category; three categories per store make nine. */
-    private const PRODUCTS_PER_CATEGORY = 3;
-
     /**
      * Hosted sample photos shared with gp247:shop-sample: products use product-N.png,
      * categories use cate-N.png.
      */
     private const PRODUCT_IMAGE_BASE = 'https://static.gp247.net/file/s-cart/product/product-';
-    private const PRODUCT_IMAGE_COUNT = 36;
-    private const PRODUCT_IMAGE_OFFSET = 18;
     private const CATEGORY_IMAGE_BASE = 'https://static.gp247.net/file/s-cart/cate/cate-';
-    private const CATEGORY_IMAGE_COUNT = 10;
-    private const CATEGORY_IMAGE_OFFSET = 6;
 
     /**
-     * How many product / category photos this run has handed out.
-     */
-    private int $productImageCursor = 0;
-    private int $categoryImageCursor = 0;
-
-    /**
-     * The three categories of each store, in every sample language. The category name
-     * also names the products inside it, so a store page reads like a catalogue
-     * rather than nine copies of one line.
+     * The three categories of each store: titles in every sample language, the hosted
+     * category photo, the alias of the matching gp247:shop-sample category and the three
+     * products it holds — each product with the hosted photo that shows it and its name
+     * in every sample language.
+     *
+     * WHY photos are listed per product instead of handed out in rotation: every hosted
+     * photo shows one specific device, so only an explicit mapping keeps a product inside
+     * the category that matches its picture.
      */
     private const CATEGORIES = [
         'vendor01' => [
-            ['en' => 'Electronics', 'ja' => '家電', 'vi' => 'Điện tử'],
-            ['en' => 'Phones & Tablets', 'ja' => 'スマートフォン・タブレット', 'vi' => 'Điện thoại & Máy tính bảng'],
-            ['en' => 'Accessories', 'ja' => 'アクセサリー', 'vi' => 'Phụ kiện'],
+            [
+                'titles' => ['en' => 'Laptops & Computers', 'ja' => 'ノートPC・パソコン', 'vi' => 'Laptop & Máy tính'],
+                'image' => 1, 'shop' => 'laptop-may-tinh',
+                'products' => [
+                    [2, '14-inch Thin and Light Laptop', '14インチ薄型軽量ノートPC', 'Laptop mỏng nhẹ 14 inch'],
+                    [32, 'Mini Desktop PC', 'ミニデスクトップPC', 'Máy tính mini để bàn'],
+                    [33, 'Triple-Fan Graphics Card', 'トリプルファン搭載グラフィックボード', 'Card đồ hoạ ba quạt'],
+                ],
+            ],
+            [
+                'titles' => ['en' => 'Monitors & Printers', 'ja' => 'モニター・プリンター', 'vi' => 'Màn hình & Máy in'],
+                'image' => 10, 'shop' => 'laptop-may-tinh',
+                'products' => [
+                    [13, '27-inch Curved Monitor', '27インチ曲面モニター', 'Màn hình cong 27 inch'],
+                    [36, '24-inch Office Monitor', '24インチオフィスモニター', 'Màn hình văn phòng 24 inch'],
+                    [34, 'All-in-One Printer', '複合機プリンター', 'Máy in đa năng'],
+                ],
+            ],
+            [
+                'titles' => ['en' => 'Keyboards & Mice', 'ja' => 'キーボード・マウス', 'vi' => 'Bàn phím & Chuột'],
+                'image' => 7, 'shop' => 'phu-kien-may-tinh',
+                'products' => [
+                    [8, 'RGB Mechanical Keyboard', 'RGBメカニカルキーボード', 'Bàn phím cơ RGB'],
+                    [9, 'Ergonomic Wireless Mouse', 'エルゴノミクスワイヤレスマウス', 'Chuột không dây công thái học'],
+                    [20, 'Full HD Webcam', 'フルHDウェブカメラ', 'Webcam Full HD'],
+                ],
+            ],
         ],
         'vendor02' => [
-            ['en' => 'Clothing & Fashion', 'ja' => 'ファッション・衣料品', 'vi' => 'Thời trang & Quần áo'],
-            ['en' => 'Shoes', 'ja' => '靴', 'vi' => 'Giày dép'],
-            ['en' => 'Bags', 'ja' => 'バッグ', 'vi' => 'Túi xách'],
+            [
+                'titles' => ['en' => 'Phones & Tablets', 'ja' => 'スマートフォン・タブレット', 'vi' => 'Điện thoại & Máy tính bảng'],
+                'image' => 2, 'shop' => 'dien-thoai-may-tinh-bang',
+                'products' => [
+                    [3, '6.7-inch Smartphone', '6.7インチスマートフォン', 'Điện thoại thông minh 6,7 inch'],
+                    [4, 'Tablet with Stylus', 'タッチペン付きタブレット', 'Máy tính bảng kèm bút cảm ứng'],
+                    [26, 'E-ink E-reader', '電子ペーパー電子書籍リーダー', 'Máy đọc sách màn hình e-ink'],
+                ],
+            ],
+            [
+                'titles' => ['en' => 'Headphones & Speakers', 'ja' => 'ヘッドホン・スピーカー', 'vi' => 'Tai nghe & Loa'],
+                'image' => 3, 'shop' => 'am-thanh',
+                'products' => [
+                    [1, 'Noise-Cancelling Over-Ear Headphones', 'ノイズキャンセリングヘッドホン', 'Tai nghe chụp tai chống ồn'],
+                    [7, 'True Wireless Earbuds', '完全ワイヤレスイヤホン', 'Tai nghe không dây True Wireless'],
+                    [17, 'Bluetooth Speaker with LED Light', 'LEDライト付きBluetoothスピーカー', 'Loa Bluetooth đèn LED'],
+                ],
+            ],
+            [
+                'titles' => ['en' => 'Charging & Storage', 'ja' => '充電・ストレージ', 'vi' => 'Sạc & Lưu trữ'],
+                'image' => 8, 'shop' => 'sac-luu-tru',
+                'products' => [
+                    [5, '20,000 mAh Power Bank', '20,000mAhモバイルバッテリー', 'Pin sạc dự phòng 20.000 mAh'],
+                    [31, '140W GaN Fast Charger', '140W GaN急速充電器', 'Củ sạc nhanh GaN 140W'],
+                    [18, '2TB Portable SSD', '2TBポータブルSSD', 'Ổ cứng SSD di động 2TB'],
+                ],
+            ],
         ],
         'vendor03' => [
-            ['en' => 'Home & Garden', 'ja' => 'ホーム・ガーデン', 'vi' => 'Nhà cửa & Vườn'],
-            ['en' => 'Kitchen', 'ja' => 'キッチン', 'vi' => 'Nhà bếp'],
-            ['en' => 'Furniture', 'ja' => '家具', 'vi' => 'Nội thất'],
+            [
+                'titles' => ['en' => 'Gaming', 'ja' => 'ゲーミング', 'vi' => 'Gaming'],
+                'image' => 5, 'shop' => 'gaming',
+                'products' => [
+                    [12, 'Wireless Game Controller', 'ワイヤレスゲームコントローラー', 'Tay cầm chơi game không dây'],
+                    [19, 'Handheld Game Console', '携帯型ゲーム機', 'Máy chơi game cầm tay'],
+                    [21, 'Gaming Headset with Mic', 'マイク付きゲーミングヘッドセット', 'Tai nghe gaming có micro'],
+                ],
+            ],
+            [
+                'titles' => ['en' => 'Smart Home', 'ja' => 'スマートホーム', 'vi' => 'Nhà thông minh'],
+                'image' => 9, 'shop' => 'nha-thong-minh',
+                'products' => [
+                    [24, 'Robot Vacuum and Mop', '水拭き対応ロボット掃除機', 'Robot hút bụi lau nhà'],
+                    [30, 'Wi-Fi Security Camera', 'Wi-Fi防犯カメラ', 'Camera an ninh Wi-Fi'],
+                    [10, 'Smart Speaker with Voice Assistant', '音声アシスタント搭載スマートスピーカー', 'Loa thông minh trợ lý giọng nói'],
+                ],
+            ],
+            [
+                'titles' => ['en' => 'Cameras & Drones', 'ja' => 'カメラ・ドローン', 'vi' => 'Máy ảnh & Flycam'],
+                'image' => 6, 'shop' => 'may-anh-flycam',
+                'products' => [
+                    [11, 'Mirrorless Camera', 'ミラーレスカメラ', 'Máy ảnh mirrorless'],
+                    [14, '4K Camera Drone', '4Kカメラ搭載ドローン', 'Flycam quay 4K'],
+                    [16, 'Waterproof Action Camera', '防水アクションカメラ', 'Camera hành trình chống nước'],
+                ],
+            ],
         ],
     ];
 
@@ -467,7 +532,7 @@ class SampleData extends Command
         $categories = [];
         $descriptions = [];
         foreach (self::STORES as $storeId => $store) {
-            foreach (self::CATEGORIES[$store['code']] as $index => $titles) {
+            foreach (self::CATEGORIES[$store['code']] as $index => $category) {
                 $categoryId = $this->vendorCategoryId($store['code'], $index + 1);
                 $categories[] = [
                     'id' => $categoryId,
@@ -475,12 +540,12 @@ class SampleData extends Command
                     'alias' => 'category-'.$store['code'].'-'.($index + 1),
                     'status' => 1,
                     'sort' => $index,
-                    'image' => $this->nextCategoryImage(),
+                    'image' => self::CATEGORY_IMAGE_BASE.$category['image'].'.png',
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
                 ];
 
-                foreach ($titles as $lang => $title) {
+                foreach ($category['titles'] as $lang => $title) {
                     $descriptions[] = [
                         'vendor_category_id' => $categoryId,
                         'lang' => $lang,
@@ -514,8 +579,13 @@ class SampleData extends Command
     {
         // Shop categories are optional here: a site that has not seeded the shop
         // sample data has none, and that must not stop the marketplace sample.
-        // Where they exist the products are spread over them instead of piling
-        // into one, so browsing the marketplace finds them on more than one page.
+        // A product goes into the gp247:shop-sample category of the same topic when
+        // the site has it; otherwise the products are spread over the active ones so
+        // browsing the marketplace still finds them on more than one page.
+        $shopCategoryByAlias = ShopCategory::where('status', 1)
+            ->whereIn('alias', $this->shopCategoryAliases())
+            ->pluck('id', 'alias')
+            ->all();
         $shopCategoryIds = ShopCategory::where('status', 1)->orderBy('id')->limit(9)->pluck('id')->all();
 
         $price = $this->samplePrice();
@@ -525,10 +595,10 @@ class SampleData extends Command
 
         foreach (self::STORES as $storeId => $store) {
             $number = 0;
-            foreach (self::CATEGORIES[$store['code']] as $index => $titles) {
+            foreach (self::CATEGORIES[$store['code']] as $index => $category) {
                 $categoryId = $this->vendorCategoryId($store['code'], $index + 1);
 
-                for ($inCategory = 1; $inCategory <= self::PRODUCTS_PER_CATEGORY; $inCategory++) {
+                foreach ($category['products'] as [$image, $nameEn, $nameJa, $nameVi]) {
                     $number++;
                     $productId = $this->productId($store['code'], $number);
                     $suffix = $store['code'].'-'.$number;
@@ -537,7 +607,10 @@ class SampleData extends Command
                         'id' => $productId,
                         'sku' => 'SKU-'.strtoupper($suffix),
                         'alias' => 'sample-product-'.$suffix,
-                        'image' => $this->nextProductImage(),
+                        // WHY the hosted set: a marketplace demo then looks like the shop demo
+                        // around it, and the plugin carries no stock photos of its own. It needs
+                        // internet; offline, the card falls back to the theme's "no image" box.
+                        'image' => self::PRODUCT_IMAGE_BASE.$image.'.png',
                         'supplier_id' => 'SUP-'.strtoupper($store['code']),
                         'store_id' => $storeId,
                         // A spread of prices rather than nine identical ones, so
@@ -570,7 +643,7 @@ class SampleData extends Command
                     $descriptions[] = [
                         'product_id' => $productId,
                         'lang' => 'en',
-                        'name' => $titles['en'].' '.$inCategory.' of '.$store['en'],
+                        'name' => $nameEn,
                         'keyword' => 'sample, product',
                         'description' => 'Sample product sold by '.$store['en'].'.',
                         'content' => '<p>Sample product sold by '.$store['en'].'.</p>',
@@ -578,7 +651,7 @@ class SampleData extends Command
                     $descriptions[] = [
                         'product_id' => $productId,
                         'lang' => 'ja',
-                        'name' => $store['ja'].'の'.$titles['ja'].' '.$inCategory,
+                        'name' => $nameJa,
                         'keyword' => 'sample, product',
                         'description' => $store['ja'].'が販売するサンプル商品です。',
                         'content' => '<p>'.$store['ja'].'が販売するサンプル商品です。</p>',
@@ -586,7 +659,7 @@ class SampleData extends Command
                     $descriptions[] = [
                         'product_id' => $productId,
                         'lang' => 'vi',
-                        'name' => $titles['vi'].' '.$inCategory.' của '.$store['vi'],
+                        'name' => $nameVi,
                         'keyword' => 'sample, product',
                         'description' => 'Sản phẩm mẫu bán bởi '.$store['vi'].'.',
                         'content' => '<p>Sản phẩm mẫu bán bởi '.$store['vi'].'.</p>',
@@ -597,10 +670,12 @@ class SampleData extends Command
                         'vendor_category_id' => $categoryId,
                     ];
 
-                    if ($shopCategoryIds) {
+                    $shopCategoryId = $shopCategoryByAlias[$category['shop']]
+                        ?? ($shopCategoryIds ? $shopCategoryIds[($number - 1) % count($shopCategoryIds)] : null);
+                    if ($shopCategoryId !== null) {
                         $shopLinks[] = [
                             'product_id' => $productId,
-                            'category_id' => $shopCategoryIds[($number - 1) % count($shopCategoryIds)],
+                            'category_id' => $shopCategoryId,
                         ];
                     }
                 }
@@ -615,42 +690,20 @@ class SampleData extends Command
     }
 
     /**
-     * Next hosted product photo (product-1.png … product-36.png, the set gp247:shop-sample uses).
+     * Aliases of the gp247:shop-sample categories the vendor categories map onto.
      *
-     * WHY the hosted set: a marketplace demo then looks like the shop demo around it, and
-     * the plugin carries no stock photos of its own. It needs internet; offline, the card
-     * falls back to the theme's "no image" box and everything else still works.
-     *
-     * WHY start at photo 19: gp247:shop-sample hands its 54 products photos 1–36 in order and
-     * then 1–18 again, so 19–36 are the ones it uses least. Starting there and rotating keeps
-     * every photo at most three times on a site that has both samples — the fewest possible.
-     *
-     * @return string
+     * @return array<int, string>
      */
-    private function nextProductImage(): string
+    private function shopCategoryAliases(): array
     {
-        $number = ($this->productImageCursor + self::PRODUCT_IMAGE_OFFSET) % self::PRODUCT_IMAGE_COUNT + 1;
-        $this->productImageCursor++;
+        $aliases = [];
+        foreach (self::CATEGORIES as $categories) {
+            foreach ($categories as $category) {
+                $aliases[] = $category['shop'];
+            }
+        }
 
-        return self::PRODUCT_IMAGE_BASE.$number.'.png';
-    }
-
-    /**
-     * Next hosted category photo (cate-1.png … cate-10.png, the set gp247:shop-sample uses for
-     * its categories).
-     *
-     * WHY start at photo 7: gp247:shop-sample hands out 16 of them in rotation (1–10, then
-     * 1–6), so the vendor categories carry on the same rotation from photo 7 and
-     * the use of every photo stays as even as possible across both samples.
-     *
-     * @return string
-     */
-    private function nextCategoryImage(): string
-    {
-        $number = ($this->categoryImageCursor + self::CATEGORY_IMAGE_OFFSET) % self::CATEGORY_IMAGE_COUNT + 1;
-        $this->categoryImageCursor++;
-
-        return self::CATEGORY_IMAGE_BASE.$number.'.png';
+        return array_values(array_unique($aliases));
     }
 
     /**
