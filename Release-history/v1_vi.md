@@ -5,6 +5,9 @@
 ## Giới thiệu
 Trang này ghi các phiên bản của plugin MultiVendor và những thay đổi đáng chú ý trong mỗi bản, để chủ sàn biết mình đang dùng bản nào và nâng cấp thì được gì. Tính năng chi tiết xem [tài liệu Tổng quan sàn](https://gp247.net/vi/docs/plugin-multi-vendor/multi-vendor-overview.html) trên gp247.net.
 
+## Phiên bản 1.1.6
+- **Sàn mẫu là sàn đồ điện tử, ảnh khớp với sản phẩm.** `php artisan gp247:vendor-sample` nay tạo ba gian hàng điện tử với các danh mục như Laptop & Máy tính, Điện thoại & Máy tính bảng, Gaming hay Nhà thông minh, cùng 27 sản phẩm có tên thật bằng tiếng Việt, tiếng Anh và tiếng Nhật, mỗi sản phẩm hiện đúng ảnh của thiết bị đó. Khi site có dữ liệu mẫu của shop, mỗi sản phẩm còn nằm trong danh mục shop cùng chủ đề. Tên gian hàng, tài khoản vendor và đường dẫn sản phẩm giữ nguyên; gian hàng và sản phẩm của bạn không bị đụng tới.
+
 ## Phiên bản 1.1.5
 - **Cập nhật plugin chạy lại được trên sàn đang dùng bản Pro.** Lần cập nhật dừng với lỗi "Integrity constraint violation: 1062 Duplicate entry 'MultiVendor_installed_version-0'" và file được khôi phục từ bản sao lưu, nên site vẫn ở bản cũ. Sau khi có 1.1.5, bấm cập nhật lại là được; cấu hình và dữ liệu của bạn không đổi.
 
